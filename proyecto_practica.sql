@@ -121,6 +121,43 @@ delimiter $$
     end $$
 delimiter ;
 
--- PROCEDIMIENTOS ALMACENADOS DE MARCAS
+-- PROCEDIMIENTOS ALMACENADOS DE MARCAS --
+
+-- listar marcas
+delimiter $$
+	create procedure sp_marcas_read()
+    begin
+		select * from marcas;
+	end $$
+delimiter ;
+
+-- agregar marcas
+delimiter $$
+	create procedure sp_marcas_create(m_nombre enum('Ubiquiti','hikvision','dahua','mikroTik'))
+		begin
+			insert into marcas(nombre) values (m_nombre);
+		end $$
+delimiter ;
+
+-- editar marcas 
+delimiter $$
+create procedure sp_marcas_update(m_id_marca int, m_nombre enum('Ubiquiti','hikvision','dahua','mikroTik'))
+    begin
+		update marcas
+        set
+        nombre=m_nombre
+        where id_marca= m_id_marca;
+    end $$
+delimiter ;
+
+-- eliminar marcas
+delimiter $$
+	create procedure sp_marcas_delete(m_id_marca int)
+    begin
+    delete from marcas where id_marca=m_id_marca;
+    end $$
+delimiter ;
+
+-- PROCEDIMIENTOS ALMACENADOS DE PRODUCTOS
 
 
