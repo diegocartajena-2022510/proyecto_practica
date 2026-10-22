@@ -225,6 +225,55 @@ delimiter $$
     end$$
 delimiter ;
 
+-- PROCEDIMIENTOS ALMACENADOS DE REGLAS MARGEN--
+
+-- listar reglas margen
+delimiter $$
+	create procedure sp_reglas_margen_read()
+    begin
+		select * from reglas_margen;
+    end $$
+delimiter ;
+
+-- agregar reglas margen
+delimiter $$
+	create procedure sp_reglas_margen_create( r_id_categoria int,
+                                                r_id_marca int,
+                                                r_porcentaje_margen varchar(50),
+                                                r_fecha_actualizacion date
+                                                )
+	begin 
+		insert into reglas_margen(id_categoria,id_marca,porcentaje_margen,fecha_actualizacion)
+			values (r_id_categoria,r_id_marca,r_porcentaje_margen,r_fecha_actualizacion);
+    end $$
+delimiter ;
+
+-- actualizar reglas margen
+delimiter $$
+	create procedure sp_reglas_margen_update( r_id_margen int,
+												r_id_categoria int,
+                                                r_id_marca int,
+                                                r_porcentaje_margen varchar(50),
+                                                r_fecha_actualizacion date
+                                                )
+	begin
+    update reglas_margen
+		set 
+			id_categoria=r_id_categoria,
+			id_marca=r_id_marca,
+			porcentaje_margen=r_porcentaje_margen,
+			fecha_actualizacion=r_fecha_actualizacion
+		where id_margen=r_id_margen;
+    end $$
+delimiter ;
+
+-- eliminar reglas margen
+delimiter $$
+	create procedure sp_reglas_margen_delete(r_id_margen int)
+    begin
+		delete from reglas_margen where id_margen=r_id_margen;
+    end $$
+delimiter ;
 
 
 
