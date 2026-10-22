@@ -83,7 +83,44 @@ delimiter $$
 	end$$
 delimiter ;
 
--- PROCEDIMIENTOS ALMACENADOS DE MARCAS --
+-- PROCEDIMIENTOS ALMACENADOS DE CATEGORIAS --
 
+-- listar categoria
+delimiter $$
+	create procedure sp_categria_read()
+    begin
+		select * from categoria;
+    end $$
+delimiter ;
+
+-- agregar categoria
+
+delimiter $$
+	create procedure sp_categoria_create(c_nombre enum('CCTV','WLAN','PTP','control acceso'))
+    begin
+		insert into categoria(nombre) values (c_nombre);
+    end $$
+delimiter ;
+
+-- editar categoria 
+delimiter $$
+	create procedure sp_categoria_update(c_id_categoria int, c_nombre enum('CCTV','WLAN','PTP','control acceso'))
+    begin
+		update categoria
+        set
+        nombre=c_nombre
+        where id_categoria=c_id_categoria;
+    end $$
+delimiter ;
+
+-- eliminar categoria 
+delimiter $$
+	create procedure sp_categoria_delete(c_id_categoria int)
+    begin
+		delete from categoria where id_categoria=c_id_categoria;
+    end $$
+delimiter ;
+
+-- PROCEDIMIENTOS ALMACENADOS DE MARCAS
 
 
