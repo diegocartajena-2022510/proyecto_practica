@@ -24,9 +24,11 @@ create table productos(
     stock int not null,
     modelo varchar(50),
     descripcion varchar(100),
-    precio_lista decimal(10,5),
+    precio_lista decimal(10,2),
     moneda varchar(50),
-    activo varchar(15)
+    activo varchar(15),
+    constraint fk_id_marca foreign key (id_marca) references marcas(id_marca) on delete cascade,
+    constraint fk_id_categoria foreign key (id_categoria) references categoria(id_categoria) on delete cascade
 );
 
 create table reglas_margen(
@@ -34,7 +36,9 @@ create table reglas_margen(
     id_categoria int,
     id_marca int,
     porcentaje_margen varchar(10),
-    fecha_actualizacion date
+    fecha_actualizacion date,
+    constraint id_categoria_fk foreign key (id_categoria) references categoria(id_categoria) on delete cascade,
+    constraint id_marca_fk foreign key (id_marca) references marcas(id_marca) on delete cascade
 );
 
 -- PROCEDIMIENTOS ALMACENADOS DE PROVEEDORES --
@@ -152,12 +156,75 @@ delimiter ;
 
 -- eliminar marcas
 delimiter $$
-	create procedure sp_marcas_delete(m_id_marca int)
-    begin
-    delete from marcas where id_marca=m_id_marca;
-    end $$
+create procedure sp_marcas_delete(m_id_marca int)
+	begin
+		delete from marcas where id_marca=m_id_marca;
+	end $$
 delimiter ;
 
 -- PROCEDIMIENTOS ALMACENADOS DE PRODUCTOS
+
+-- listar productos 
+delimiter $$
+create procedure sp_productos_read()
+	begin
+		select * from productos;
+	end $$
+delimiter ;
+
+-- agregar productos
+
+delimiter $$
+create procedure sp_productos_create(
+				p_id_marca int,
+                p_id_categoria int,
+                p_stock int,
+                p_modelo varchar(50),
+                p_descripcion varchar(100),
+                p_precio_lista decimal(10,2),
+                p_moneda varchar(50),
+                p_activo varchar(15)
+				)
+	begin
+		insert into productos(id_marca,id_categoria,stock,modelo,descripcion,precio_lista,moneda,activo) 
+			values (p_id_marca,p_id_categoria,p_stock,p_modelo,p_descripcion, p_precio_lista,p_moneda,p_activo);
+    end $$
+delimiter ;
+
+delimiter $$
+create procedure sp_productos_update(
+				p_id_productos int,
+                p_id_marca int,
+                p_id_categoria int,
+                p_stock int,
+                p_modelo varchar(50),
+                p_descripcion varchar(100),
+                p_precio_lista decimal(10,2),
+                p_moneda varchar(50),
+                p_activo varchar(15)
+                )
+	begin
+		update productos
+        set
+			id_marca=p_id_marca,
+            id_categoria=p_id_marca,
+            stock=p_stock,
+            modelo=p_modelo,
+            descripcion=p_descripcion,
+            precio_lista=p_precio_lista,
+            moneda=p_moneda,
+            activo=p_activo
+		where id_productos=p_id_productos;
+	end $$
+delimiter ;
+
+delimiter $$
+	create procedure sp_productos_delete(p_id_productos int)
+    begin
+		delete from productos where id_productos=p_id_productos;
+    end$$
+delimiter ;
+
+
 
 
