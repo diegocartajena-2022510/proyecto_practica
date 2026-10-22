@@ -3,8 +3,8 @@ use proyecto_practicas;
 
 create table proveedores(
 	id_proveedores int primary key auto_increment not null,
-    nombre_proveedor varchar(50) not null,
-    contacto_proveedores int not null
+    nombre_proveedores varchar(50) not null,
+    contacto_proveedores varchar(10) not null
 );
 
 create table categoria(
@@ -36,3 +36,54 @@ create table reglas_margen(
     porcentaje_margen varchar(10),
     fecha_actualizacion date
 );
+
+-- PROCEDIMIENTOS ALMACENADOS DE PROVEEDORES --
+
+-- listar proveedores
+delimiter $$
+	create procedure sp_proveedores_read()
+    begin
+		select * from proveedores;
+	end$$
+delimiter ;
+
+-- agregar proveedores
+delimiter $$
+	create procedure sp_proveedores_create(
+		p_nombre_proveedores varchar(50),
+        p_contacto_proveedores varchar(10)
+        )
+        begin
+			insert into proveedores(nombre_proveedores,contacto_proveedores) values
+			(p_nombre_proveedores, p_contacto_proveedores);
+        end$$
+delimiter ;
+
+-- actualizar proveedores
+delimiter $$
+	create procedure sp_proveedores_update(
+		p_id_proveedores int,
+        p_nombre_proveedores varchar(50),
+        p_contacto_proveedores varchar(10)
+    )
+    begin
+		update proveedores
+        set
+			nombre_proveedores= p_nombre_proveedores,
+			contacto_proveedores=p_contacto_proveedores
+        where id_proveedores=p_id_proveedores;
+	end$$
+delimiter ;
+
+-- eliminar proveedres
+delimiter $$
+	create procedure sp_proveedores_delete(p_id_proveedres int)
+    begin
+		delete from proveedores where id_proveedores=p_id_proveedres;
+	end$$
+delimiter ;
+
+-- PROCEDIMIENTOS ALMACENADOS DE MARCAS --
+
+
+
