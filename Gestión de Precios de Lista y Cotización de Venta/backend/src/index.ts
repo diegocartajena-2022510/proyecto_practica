@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { testConnection } from './config/db'; // O la ruta donde tengas tu db.ts
+import proveedoresRouter from './routes/proveedoreRoutes'
 
 dotenv.config();
 
@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.listen(PORT, async () => {
+app.use('/api',proveedoresRouter);
+
+
+app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  
-  // Probamos la conexión al arrancar
-  await testConnection();
 });
