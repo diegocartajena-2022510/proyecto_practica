@@ -1,0 +1,21 @@
+*{
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+
+
+}
+
+header{
+    background-color: rgb(82, 129, 170);
+    display: flex;
+}
+button{
+    background-color: red;
+    border: none;
+    border-radius: 10px;
+    margin-left: 500px;
+    font-size: 10px;
+    font-weight: bold;
+
+}

@@ -1,0 +1,49 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Iniciar Sesión</h2>
+    <p class="subtitle">Gestión de Precios y Cotizaciones</p>
+
+    <div *ngIf="errorMessage" class="error-banner" role="alert" aria-live="assertive">
+      <span class="error-icon">!</span>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" [(ngModel)]="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" [(ngModel)]="pasword" name="pasword" placeholder="********" required>
+      </div>
+
+      <button type="submit" class="btn-iniciar">Iniciar sesión</button>
+      <button type="button" class="btn-regsitrar" (click)="onRegister($event)">Registrarse</button>
+    </form>
+  </div>
+
+  <div class="register" *ngIf="isRegisterOpen">
+    <h2>Registrarse</h2>
+    <form (ngSubmit)="submitRegister()">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" placeholder="Tu nombre" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email-register">Correo electrónico</label>
+        <input type="email" id="email-register" [(ngModel)]="correo" name="correo" placeholder="tucorreo@ejemplo.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password-register">Contraseña</label>
+        <input type="password" id="password-register" [(ngModel)]="pasword" name="pasword" placeholder="********" required>
+      </div>
+
+      <button type="submit" class="btn-registrar">Registrarse</button>
+      <button type="button" class="btn-cancelar" (click)="closeRegister()">Cancelar</button>
+    </form>
+  </div>
+</div>
