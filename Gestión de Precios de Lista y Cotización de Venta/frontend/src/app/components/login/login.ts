@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
   templateUrl: './login.html',
 })
+
 export class Login {
   correo: string = '';
   pasword: string = '';
@@ -25,8 +26,6 @@ export class Login {
     this.auth.login(credenciales).subscribe({
       next: (res: any) => {
         console.log('Login Exisoto:', res);
-        alert('Bienvenido ' + res.usuario.nombre);
-
         this.router.navigate(['/principal']);
       },
       error: (err) => {
@@ -34,6 +33,10 @@ export class Login {
         this.errorMessage = err.error?.error || 'Ocurrió un error al iniciar sesión';
       }
     });
+  }
+
+  register() {
+    
   }
 
   onRegister(event?: Event) {
@@ -46,7 +49,16 @@ export class Login {
   }
 
   submitRegister() {
-    this.closeRegister();
-    console.log('Usuario registrado correctamente');
+    const credenciales = { nombre: this.nombre, correo: this.correo, pasword: this.pasword };
+    this.auth.register(credenciales).subscribe({
+      next: (res: any) => {
+        console.log('Registro Exitoso:', res);
+        alert('Usuario registrado correctamente');
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMessage = err.error?.error || 'Ocurrió un error al registrar el usuario';
+      }
+    });
   }
 }
