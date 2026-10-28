@@ -3,20 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="principal.css">
-    <title>Principal</title>
+    <title>Document</title>
 </head>
-
-<header>
-    <p>Inicio</p>
-    <button>cerrar sesion</button>
-</header>
-
 <body>
-    
+    <div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>NetSecure</strong>
+        <span>Catálogo & Cotizador</span>
+      </div>
+    </div>
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item ">Inicio</button>
+      <button class="nav-item">Catálogo</button>
+      <button class="nav-item">Cotizador</button>
+      <button class="nav-item">Clientes</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn">Perfil</button>
+      <button class="logout-btn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="content-panel">
+    <section class="welcome-card">
+      <div class="welcome-text">
+        <p class="eyebrow">Telecomunicaciones & Seguridad</p>
+        <h1>Tu espacio para vender, cotizar y proteger.</h1>
+        <p>
+          Organiza soluciones, revisa precios y crea propuestas rápidas con un
+          panel limpio y fácil de usar.
+        </p>
+
+        <div class="welcome-actions">
+          <button class="primary-btn">Nueva cotización</button>
+          <button class="secondary-btn">Ver catálogo</button>
+        </div>
+      </div>
+
+      <div class="welcome-visual">
+        <div class="mini-panel">
+          <span>Ventas del mes</span>
+          <strong>$128.4K</strong>
+        </div>
+
+        <div class="mini-panel">
+          <span>Proyectos activos</span>
+          <strong>46</strong>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-label">
+            <span>Meta del mes</span>
+            <strong>72%</strong>
+          </div>
+          <div class="progress-bar">
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-grid">
+      <article class="mini-card blue">
+        <span>Cotizaciones</span>
+        <strong>128</strong>
+        <small>+12 esta semana</small>
+      </article>
+
+      <article class="mini-card green">
+        <span>Productos</span>
+        <strong>248</strong>
+        <small>+8 nuevos</small>
+      </article>
+
+      <article class="mini-card orange">
+        <span>Clientes</span>
+        <strong>96</strong>
+        <small>+5 este mes</small>
+      </article>
+
+      <article class="mini-card purple">
+        <span>Ingresos</span>
+        <strong>$48K</strong>
+        <small>+18.4%</small>
+      </article>
+    </section>
+
+    <section class="info-row">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Resumen rápido</h2>
+          <span>Hoy</span>
+        </div>
+
+        <ul class="summary-list">
+          <li><span>Internet / Fibra</span><strong>24</strong></li>
+          <li><span>Telefonía</span><strong>18</strong></li>
+          <li><span>CCTV / Seguridad</span><strong>12</strong></li>
+          <li><span>Acceso / control</span><strong>9</strong></li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>Acciones rápidas</h2>
+          <span>Menu</span>
+        </div>
+
+        <div class="action-list">
+          <button>Configurar precios</button>
+          <button>Crear propuesta</button>
+          <button>Revisar clientes</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
     
 </body>
 </html>
