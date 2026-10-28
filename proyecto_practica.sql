@@ -1,6 +1,13 @@
 create database proyecto_practicas;
 use proyecto_practicas;
 
+create table usuario(
+	id_usuario int primary key auto_increment not null,
+    nombre varchar(50),
+    correo varchar(50),
+    pasword varchar(50)
+);
+
 create table proveedores(
 	id_proveedores int primary key auto_increment not null,
     nombre_proveedores varchar(50) not null,
@@ -275,5 +282,33 @@ delimiter $$
     end $$
 delimiter ;
 
+-- USUARIOS --
 
 
+delimiter $$
+	create procedure sp_usuarios_create(u_nombre varchar(50),u_correo varchar(50),u_pasword varchar(50))
+    begin
+		insert into usuario(nombre,correo,pasword) values (u_nombre,u_correo,u_pasword);
+    end $$
+delimiter ;
+
+
+DELIMITER $$
+CREATE PROCEDURE sp_usuarios_login(
+    IN u_correo VARCHAR(50),
+    IN u_pasword VARCHAR(50)
+)
+BEGIN
+    -- Este busca si el usuario existe con ese correo y contraseña
+    SELECT id_usuario, nombre, correo 
+    FROM usuario 
+    WHERE correo = u_correo AND pasword = u_pasword;
+END $$
+DELIMITER ;
+
+delimiter $$
+create procedure sp_usuarios_delete ( u_id_usuario int)
+begin
+	delete from usuario where u_id_usuario=id_usuario;
+end $$
+delimiter 
