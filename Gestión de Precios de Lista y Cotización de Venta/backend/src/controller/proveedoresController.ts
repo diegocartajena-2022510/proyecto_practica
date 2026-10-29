@@ -1,4 +1,4 @@
-import { Request,response,Response } from "express";
+import { Request,Response } from "express";
 import pool from "../config/db";
 
 export const proveedores_read = async (req: Request, res: Response) => {
