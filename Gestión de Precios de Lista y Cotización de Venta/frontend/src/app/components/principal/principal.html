@@ -16,15 +16,15 @@
       </div>
     </div>
     <nav class="nav-menu" aria-label="Navegación principal">
-      <button class="nav-item ">Inicio</button>
-      <button class="nav-item">Catálogo</button>
-      <button class="nav-item">Cotizador</button>
+      <button class="nav-item active" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
+      <button class="nav-item">Cotizar</button>
       <button class="nav-item">Sobre nosotros</button>
     </nav>
 
     <div class="header-actions">
       <button class="ghost-btn">Perfil</button>
-      <button class="logout-btn">Cerrar sesión</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
 
