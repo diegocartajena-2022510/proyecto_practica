@@ -7,7 +7,6 @@
   font-family: Arial, sans-serif;
   position: relative;
 }
-
 .login-card {
   background: white;
   padding: 40px;
@@ -17,7 +16,17 @@
   max-width: 420px;
   border: 1px solid rgba(148, 163, 184, 0.25);
 }
-
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background:  rgb(69, 64, 64);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #fff;
+}
 .login-card h2,
 .register h2 {
   margin: 0 0 10px;
@@ -25,14 +34,12 @@
   text-align: center;
   font-size: 2rem;
 }
-
 .subtitle {
   color: #64748b;
   font-size: 14px;
   margin-bottom: 24px;
   text-align: center;
 }
-
 .error-banner {
   display: flex;
   align-items: center;
@@ -47,7 +54,6 @@
   font-weight: 600;
   box-shadow: 0 8px 20px rgba(220, 38, 38, 0.08);
 }
-
 .error-icon {
   display: inline-flex;
   align-items: center;
@@ -61,20 +67,17 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-
 .form-group {
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
 }
-
 .form-group label {
   font-size: 13px;
   font-weight: 700;
   margin-bottom: 7px;
   color: #334155;
 }
-
 .form-group input {
   padding: 12px 14px;
   border: 1px solid #d8e1ec;
@@ -83,7 +86,6 @@
   background: #f8fafc;
   transition: 0.2s ease;
 }
-
 .form-group input:focus {
   border-color: #2563eb;
   background: #fff;
@@ -105,27 +107,24 @@
   transition: 0.2s ease;
   margin-top: 8px;
 }
-
 .btn-iniciar {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  background: rgb(69, 64, 64);
+  color: white;
+  box-shadow: 0 10px 18px rgba(37, 99, 235, 0.22);
+}
+.btn-iniciar:hover {
+  filter: brightness(2.5);
+}
+.btn-regsitrar,
+.btn-registrar {
+  background: rgb(119, 114, 114);
   color: white;
   box-shadow: 0 10px 18px rgba(37, 99, 235, 0.22);
 }
 
-.btn-iniciar:hover {
-  filter: brightness(1.05);
-}
-
-.btn-regsitrar,
-.btn-registrar {
-  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-  color: white;
-  box-shadow: 0 10px 18px rgba(249, 115, 22, 0.2);
-}
-
 .btn-regsitrar:hover,
 .btn-registrar:hover {
-  filter: brightness(1.05);
+  background:rgb(90, 88, 88);
 }
 
 .btn-cancelar {
