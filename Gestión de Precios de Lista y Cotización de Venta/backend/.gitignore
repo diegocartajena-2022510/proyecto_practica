@@ -1,4 +1,7 @@
+# Dependencias de Node
 node_modules/
+
+# Archivos compilados de TypeScript (opcional pero recomendado)
 dist/
-.angular/
-.env
+build/
+*.tsbuildinfo

@@ -9,7 +9,6 @@ export const marca_read=async (req:Request,res:Response)=>{
         res.status(500).json({error: error.message});
     }
 }
-
 export const marca_create=async(req:Request,res:Response)=>{
     const {nombre}=req.body;
     try{
@@ -19,13 +18,12 @@ export const marca_create=async(req:Request,res:Response)=>{
         res.status(500).json({error: error.message});
     }
 }
-
 export const marca_update=async(req:Request,res:Response)=>{
     const{id}=req.params;
     const{nombre}=req.body;
     try{
-        await pool.query('CALL sp_marcas_update(?,?)');
-        res.status(201).json({mensaje: "marca creada correctamente"});
+        await pool.query('CALL sp_marcas_update(?,?)',[id,nombre]);
+        res.status(201).json({mensaje: "marca actualizada correctamente"});
     }catch(error:any){
         res.status(500).json({error:error.message});
     }
@@ -35,9 +33,10 @@ export const marca_delete=async(req:Request,res:Response)=>{
     const{id}=req.params;
     try{
         await pool.query('CALL sp_marcas_delete(?)',[id]);
-        res.status(201).json({mensaje: 'producto eliminado correctamente'})
+        res.status(201).json({mensaje: 'marca eliminada correctamente'})
     }catch(error:any){
         res.status(500).json({error:error.message});
     }
 }
+
 
