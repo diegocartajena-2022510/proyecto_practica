@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 
 @Component({
@@ -23,5 +22,11 @@ export class Principal {
   }
   cerrarSesion(){
     this.router.navigate(['/login']);
+  }
+  onCotizar(){
+    this.router.navigate(['/cotizar']);
+  }
+  OnSobreNosotros(){
+    this.router.navigate(['/sobre-nosotros']);
   }
 }
