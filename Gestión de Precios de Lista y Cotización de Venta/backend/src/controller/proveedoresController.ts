@@ -9,7 +9,6 @@ export const proveedores_read = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 export const proveedores_create=async (req:Request,res:Response)=>{
     const {nombre_proveedores,contacto_proveedores}=req.body;
     try{
@@ -20,7 +19,6 @@ export const proveedores_create=async (req:Request,res:Response)=>{
         res.status(500).json({ error: error.message });
     }
 }
-
 export const proveedores_update = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { nombre_proveedores, contacto_proveedores } = req.body;
@@ -31,7 +29,6 @@ export const proveedores_update = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 export const proveedores_delete= async (req:Request, res:Response)=>{
     const{id}= req.params;
     try{
