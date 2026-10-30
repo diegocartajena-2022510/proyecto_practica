@@ -22,4 +22,11 @@ export class Catalogo {
   cerrarSesion(){
     this.router.navigate(['/login']);
   }
+  onCotizar(){
+    this.router.navigate(['/cotizar']);
+  }
+  onSobreNosotros(){
+    this.router.navigate(['/sobre-nosotros']);
+  }
+  
 }
