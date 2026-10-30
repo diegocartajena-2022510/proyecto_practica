@@ -1,1 +1,165 @@
-<p>cotizar works!</p>
+<div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; cotizador</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
+      <button class="nav-item active">Cotizar</button>
+      <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn">Perfil</button>
+    </div>
+  </header>
+  <main class="quote-layout">
+    <section class="quote-header">
+      <div>
+        <p class="eyebrow">Cotización</p>
+        <h1>Crear propuesta rápida</h1>
+      </div>
+
+      <div class="header-actions">
+        <button class="ghost-btn">Guardar borrador</button>
+        <button class="primary-btn">Enviar cotización</button>
+      </div>
+    </section>
+
+    <section class="quote-content">
+      <div class="quote-form-card">
+        <div class="card-header">
+          <h2>Detalles del proyecto</h2>
+          <span>Cliente / solución</span>
+        </div>
+
+        <form class="quote-form">
+          <div class="field-group">
+            <label>Cliente</label>
+            <input type="text" placeholder="Nombre del cliente" />
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Tipo de solución</label>
+              <select>
+                <option>elegir</option>
+                <option>Internet + seguridad</option>
+                <option>Telefonía IP</option>
+                <option>CCTV / vigilancia</option>
+                <option>Control de acceso</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label>Plazo</label>
+              <select>
+                <option>elegir</option>
+                <option>15 días</option>
+                <option>30 días</option>
+                <option>45 días</option>
+                <option>60 días</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label>Cantidad</label>
+              <input type="number" value="0" />
+            </div>
+
+            <div class="field-group">
+              <label>Moneda</label>
+              <select>
+                <option>elegir</option>
+                <option>MXN</option>
+                <option>QTZL</option>
+                <option>USD</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label >Notas adicionales</label>
+            <textarea placeholder="Agregar notas adicionales..."></textarea>
+          </div>
+        </form>
+      </div>
+
+      <aside class="summary-card">
+        <div class="card-header">
+          <h2>Resumen</h2>
+          <span>Servicio</span>
+        </div>
+
+        <div class="service-list">
+          <article class="quote-item">
+            <div>
+              <strong>Fibra 200 Mbps</strong>
+              <small>Internet</small>
+            </div>
+            <span>$1,250</span>
+          </article>
+
+          <article class="quote-item">
+            <div>
+              <strong>Switch gestionado</strong>
+              <small>Red</small>
+            </div>
+            <span>$1,980</span>
+          </article>
+
+          <article class="quote-item">
+            <div>
+              <strong>Cámara 4K</strong>
+              <small>CCTV</small>
+            </div>
+            <span>$2,140</span>
+          </article>
+        </div>
+
+        <div class="totals">
+          <div><span>Subtotal</span><strong>$5,370.00</strong></div>
+          <div><span>IVA</span><strong>$987.00</strong></div>
+          <div class="grand-total"><span>Total</span><strong>$6,357.00</strong></div>
+        </div>
+
+        <button class="primary-btn wide">Agregar servicio</button>
+      </aside>
+    </section>
+
+    <section class="catalog-preview">
+      <article class="product-card blue">
+        <span>Internet</span>
+        <strong>Fibra premium</strong>
+        <small>Desde $1,250 MXN</small>
+      </article>
+
+      <article class="product-card green">
+        <span>Telefonía</span>
+        <strong>PABX cloud</strong>
+        <small>Desde $980 MXN</small>
+      </article>
+
+      <article class="product-card orange">
+        <span>CCTV</span>
+        <strong>Videovigilancia</strong>
+        <small>Desde $2,140 MXN</small>
+      </article>
+
+      <article class="product-card purple">
+        <span>Control</span>
+        <strong>Acceso inteligente</strong>
+        <small>Desde $1,690 MXN</small>
+      </article>
+    </section>
+  </main>
+</div>
+
