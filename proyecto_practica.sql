@@ -16,12 +16,12 @@ create table proveedores(
 
 create table categoria(
 	id_categoria int primary key auto_increment not null,
-    nombre enum('CCTV','WLAN','PTP','control acceso') not null
+    nombre varchar(50) not null
 );
 
 create table marcas(
 	id_marca int primary key auto_increment not null,
-    nombre enum('Ubiquiti','hikvision','dahua','mikroTik')
+    nombre varchar(50) not null
 );
 
 create table productos(
@@ -107,7 +107,7 @@ delimiter ;
 -- agregar categoria
 
 delimiter $$
-	create procedure sp_categoria_create(c_nombre enum('CCTV','WLAN','PTP','control acceso'))
+	create procedure sp_categoria_create(c_nombre varchar(50))
     begin
 		insert into categoria(nombre) values (c_nombre);
     end $$
@@ -115,7 +115,7 @@ delimiter ;
 
 -- editar categoria 
 delimiter $$
-	create procedure sp_categoria_update(c_id_categoria int, c_nombre enum('CCTV','WLAN','PTP','control acceso'))
+	create procedure sp_categoria_update(c_id_categoria int, c_nombre varchar(50))
     begin
 		update categoria
         set
@@ -144,7 +144,7 @@ delimiter ;
 
 -- agregar marcas
 delimiter $$
-	create procedure sp_marcas_create(m_nombre enum('Ubiquiti','hikvision','dahua','mikroTik'))
+	create procedure sp_marcas_create(m_nombre varchar(50))
 		begin
 			insert into marcas(nombre) values (m_nombre);
 		end $$
@@ -152,7 +152,7 @@ delimiter ;
 
 -- editar marcas 
 delimiter $$
-create procedure sp_marcas_update(m_id_marca int, m_nombre enum('Ubiquiti','hikvision','dahua','mikroTik'))
+create procedure sp_marcas_update(m_id_marca int, m_nombre varchar(50))
     begin
 		update marcas
         set
@@ -311,4 +311,73 @@ create procedure sp_usuarios_delete ( u_id_usuario int)
 begin
 	delete from usuario where u_id_usuario=id_usuario;
 end $$
-delimiter 
+delimiter ;
+
+-- REGISTROS DE PRUEBA USANDO PROCEDIMIENTOS ALMACENADOS --
+-- 10 registros por entidad
+
+CALL sp_proveedores_create('TechNet', '5551234');
+CALL sp_proveedores_create('RedLink', '5554321');
+CALL sp_proveedores_create('NexaCom', '5553456');
+CALL sp_proveedores_create('OptiFlow', '5558765');
+CALL sp_proveedores_create('MetroData', '5551122');
+CALL sp_proveedores_create('SegurMax', '5553344');
+CALL sp_proveedores_create('NetVision', '5557788');
+CALL sp_proveedores_create('SkyInfra', '5559900');
+CALL sp_proveedores_create('CablePro', '5552233');
+CALL sp_proveedores_create('LinkPlus', '5554455');
+
+CALL sp_categoria_create('CCTV');
+CALL sp_categoria_create('CCTV');
+CALL sp_categoria_create('WLAN');
+CALL sp_categoria_create('WLAN');
+CALL sp_categoria_create('PTP');
+CALL sp_categoria_create('PTP');
+CALL sp_categoria_create('control acceso');
+CALL sp_categoria_create('control acceso');
+CALL sp_categoria_create('WLAN');
+CALL sp_categoria_create('CCTV');
+
+CALL sp_marcas_create('Ubiquiti');
+CALL sp_marcas_create('Ubiquiti');
+CALL sp_marcas_create('Ubiquiti');
+CALL sp_marcas_create('hikvision');
+CALL sp_marcas_create('hikvision');
+CALL sp_marcas_create('hikvision');
+CALL sp_marcas_create('dahua');
+CALL sp_marcas_create('dahua');
+CALL sp_marcas_create('mikroTik');
+CALL sp_marcas_create('mikroTik');
+
+CALL sp_productos_create(1, 1, 25, 'UAC-AP-Pro', 'Access point profesional', 699.00, 'USD', 'Activo');
+CALL sp_productos_create(1, 2, 18, 'UAP-AC-LR', 'Access point de interior', 540.00, 'USD', 'Activo');
+CALL sp_productos_create(2, 3, 12, 'DS-2CD2142G0', 'Cámara IP 4MP', 899.99, 'USD', 'Activo');
+CALL sp_productos_create(2, 1, 20, 'DS-2CE72DF3T', 'Cámara analógica inteligente', 650.00, 'USD', 'Activo');
+CALL sp_productos_create(3, 4, 8, 'PTO-Bridge 5G', 'Punto a punto 5G', 1500.00, 'USD', 'Activo');
+CALL sp_productos_create(3, 3, 14, 'PTO-Bridge 60G', 'Punto a punto 60G', 1700.00, 'USD', 'Activo');
+CALL sp_productos_create(4, 2, 30, 'CCR1009-7G-1C', 'Router de borde', 220.00, 'USD', 'Activo');
+CALL sp_productos_create(4, 4, 11, 'RB5009UG+', 'Switch compacto', 185.00, 'USD', 'Activo');
+CALL sp_productos_create(1, 1, 9, 'NanoBeam 5AC', 'Enlace inalámbrico', 120.00, 'USD', 'Activo');
+CALL sp_productos_create(2, 2, 16, 'TC-NVR-8P', 'Grabador de video', 740.00, 'USD', 'Activo');
+
+CALL sp_reglas_margen_create(1, 1, '25%', CURDATE());
+CALL sp_reglas_margen_create(1, 2, '28%', CURDATE());
+CALL sp_reglas_margen_create(2, 2, '30%', CURDATE());
+CALL sp_reglas_margen_create(2, 3, '22%', CURDATE());
+CALL sp_reglas_margen_create(3, 3, '20%', CURDATE());
+CALL sp_reglas_margen_create(3, 4, '24%', CURDATE());
+CALL sp_reglas_margen_create(4, 1, '26%', CURDATE());
+CALL sp_reglas_margen_create(4, 4, '18%', CURDATE());
+CALL sp_reglas_margen_create(1, 3, '27%', CURDATE());
+CALL sp_reglas_margen_create(2, 4, '29%', CURDATE());
+
+CALL sp_usuarios_create('Carlos López', 'carlos@empresa.com', '123456');
+CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123');
+CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123');
+CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456');
+CALL sp_usuarios_create('José Torres', 'jose@empresa.com', 'jose2024');
+CALL sp_usuarios_create('Sofía Castro', 'sofia@empresa.com', 'sofia789');
+CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321');
+CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123');
+CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456');
+CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987');
