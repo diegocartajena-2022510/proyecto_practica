@@ -4,15 +4,15 @@
       <div class="brand-mark">N</div>
       <div class="brand-copy">
         <strong>Nexaro</strong>
-        <span>Catálogo &amp; cotizar</span>
+        <span>Catálogo &amp; cotizador</span>
       </div>
     </div>
 
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item active">Catálogo</button>
-      <button class="nav-item">cotizar</button>
-      <button class="nav-item">Sobre nosotros</button>
+      <button class="nav-item" (click)="onCotizar()">Cotizar</button>
+      <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
     </nav>
     <div class="header-actions">
       <button class="ghost-btn">Perfil</button>
