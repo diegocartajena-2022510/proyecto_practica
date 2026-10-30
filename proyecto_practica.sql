@@ -4,8 +4,8 @@ use proyecto_practicas;
 create table usuario(
 	id_usuario int primary key auto_increment not null,
     nombre varchar(50),
-    correo varchar(50),
-    pasword varchar(50)
+    correo varchar(50) unique not null,
+    pasword varchar(50) 
 );
 
 create table proveedores(
@@ -371,7 +371,7 @@ CALL sp_reglas_margen_create(4, 4, '18%', CURDATE());
 CALL sp_reglas_margen_create(1, 3, '27%', CURDATE());
 CALL sp_reglas_margen_create(2, 4, '29%', CURDATE());
 
-CALL sp_usuarios_create('Carlos López', 'carlos@empresa.com', '123456');
+CALL sp_usuarios_create('', 'carlos@empresa.com', '123456');
 CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123');
 CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123');
 CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456');
