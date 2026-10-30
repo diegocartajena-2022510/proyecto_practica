@@ -23,3 +23,4 @@ app.use('/api',proveedoresRouter,categoriaRouter,marcasRouter,reglas_margenRoute
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
