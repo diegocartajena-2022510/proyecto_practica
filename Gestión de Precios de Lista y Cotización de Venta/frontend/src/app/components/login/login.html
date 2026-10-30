@@ -43,9 +43,8 @@
         <label for="password-register">Contraseña</label>
         <input type="password" id="password-register" [(ngModel)]="pasword" name="pasword" placeholder="********" required>
       </div>
-
-      <button type="submit" class="btn-registrar">Registrarse</button>
-      <button type="button" class="btn-cancelar" (click)="closeRegister()">Cancelar</button>
     </form>
+    <button type="submit" class="btn-registrar" (click)="onRegisterSubmit()">Registrarse</button>
+      <button type="button" class="btn-cancelar" (click)="closeRegister()">Cancelar</button>
   </div>
 </div>
