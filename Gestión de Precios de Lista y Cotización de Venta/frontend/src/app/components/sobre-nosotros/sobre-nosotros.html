@@ -1,1 +1,167 @@
-<p>sobre-nosotros works!</p>
+<div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; cotizador</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
+      <button class="nav-item" (click)="onCotizar()">Cotizar</button>
+      <button class="nav-item active" (click)="OnSobreNosotros()">Sobre nosotros</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn">Perfil</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="company-layout">
+    <section class="hero-section">
+      <div class="hero-copy">
+        <p class="eyebrow">Nuestra empresa</p>
+        <h1>Impulsamos soluciones que conectan negocios, personas y seguridad.</h1>
+        <p>
+          En Nexaro ayudamos a empresas y clientes a transformar su operación con tecnología de
+          telecomunicaciones, redes inteligentes y soluciones de vigilancia y control.
+        </p>
+
+        <div class="hero-actions">
+          <button class="primary-btn" (click)="onCotizar()">Solicitar cotización</button>
+          <button class="secondary-btn" (click)="onCatalogo()">Ver catálogo</button>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="metric-card highlight">
+          <span>Clientes atendidos</span>
+          <strong>+1.2K</strong>
+          <small>en los últimos 24 meses</small>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-row">
+            <span>Índice de satisfacción</span>
+            <strong>4.8/5</strong>
+          </div>
+          <div class="mini-progress">
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card blue">
+        <span>Proyectos entregados</span>
+        <strong>340</strong>
+        <small>+22 este trimestre</small>
+      </article>
+
+      <article class="stat-card green">
+        <span>Tiempo de respuesta</span>
+        <strong>&lt; 24h</strong>
+        <small>soporte técnico</small>
+      </article>
+
+      <article class="stat-card orange">
+        <span>Países atendidos</span>
+        <strong>9</strong>
+        <small>con presencia regional</small>
+      </article>
+
+      <article class="stat-card purple">
+        <span>Retención</span>
+        <strong>96%</strong>
+        <small>clientes activos</small>
+      </article>
+    </section>
+
+    <section class="info-grid">
+      <article class="info-card about-card">
+        <div class="card-header">
+          <h2>Quiénes somos</h2>
+          <span>Historia</span>
+        </div>
+
+        <p>
+          Somos una empresa especializada en soluciones integrales para telecomunicaciones y
+          seguridad. Diseñamos propuestas para infraestructura, conectividad y protección con un
+          enfoque práctico, escalable y orientado a resultados.
+        </p>
+
+        <p>
+          Nuestro equipo combina experiencia comercial, soporte técnico y análisis de negocio para
+          acompañar a cada cliente desde la consulta inicial hasta la entrega final.
+        </p>
+      </article>
+
+      <article class="info-card values-card">
+        <div class="card-header">
+          <h2>Nuestros valores</h2>
+          <span>Compromiso</span>
+        </div>
+
+        <ul class="value-list">
+          <li>
+            <strong>Confianza</strong>
+            <span>Trabajamos con transparencia y continuidad en cada proyecto.</span>
+          </li>
+          <li>
+            <strong>Innovación</strong>
+            <span>Buscamos soluciones adaptadas a la operación real del cliente.</span>
+          </li>
+          <li>
+            <strong>Servicio</strong>
+            <span>Atención cercana, ágil y enfocada en resolver necesidades de negocio.</span>
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="team-section">
+      <div class="section-title">
+        <p class="eyebrow">Equipo</p>
+        <h2>Las personas detrás de cada solución</h2>
+      </div>
+
+      <div class="team-grid">
+        <article class="team-card">
+          <div class="avatar avatar-blue">AR</div>
+          <h3>Andrea Ruiz</h3>
+          <span>Directora comercial</span>
+          <p>Diseña la estrategia de ventas y fortalece la relación con cada cliente.</p>
+        </article>
+
+        <article class="team-card">
+          <div class="avatar avatar-green">JM</div>
+          <h3>José Medina</h3>
+          <span>Gerente técnico</span>
+          <p>Coordina soluciones de infraestructura, conectividad y servicios críticos.</p>
+        </article>
+
+        <article class="team-card">
+          <div class="avatar avatar-orange">SL</div>
+          <h3>Sofía León</h3>
+          <span>Soporte especialista</span>
+          <p>Acompaña la operación con atención rápida y seguimiento constante.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta-panel">
+      <div>
+        <p class="eyebrow">¿Listo para empezar?</p>
+        <h2>Construyamos una propuesta a medida para tu negocio.</h2>
+      </div>
+
+      <button class="primary-btn" (click)="onCotizar()">Crear cotización</button>
+    </section>
+  </main>
+</div>
+
