@@ -7,6 +7,7 @@ import marcasRouter from './routes/marcasRoutes';
 import reglas_margenRouter from './routes/reglas_margenRoutes';
 import productosRoutes from "./routes/productosRoutes";
 import usuariosRouter from './routes/usuariosRouter'
+import pool from './config/db';
 
 dotenv.config();
 
@@ -16,11 +17,13 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api',proveedoresRouter,categoriaRouter,marcasRouter,reglas_margenRouter,productosRoutes,usuariosRouter);
+app.use('/api',proveedoresRouter,categoriaRouter,marcasRouter,reglas_margenRouter,productosRoutes,usuariosRouter,);
 
 
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+
 
