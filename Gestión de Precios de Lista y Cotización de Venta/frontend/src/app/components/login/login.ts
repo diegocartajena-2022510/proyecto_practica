@@ -23,7 +23,7 @@ export class Login {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   }
 
-  constructor(private auth: AuthService, private router: Router, private http: HttpClient) {}
+  constructor(private auth: AuthService, private router: Router, private http: HttpClient) {};
 
   onLogin() {
     const credenciales = { correo: this.correo, pasword: this.pasword };
@@ -38,10 +38,6 @@ export class Login {
         this.errorMessage = err.error?.error || 'Ocurrió un error al iniciar sesión';
       }
     });
-  }
-
-  register() {
-    
   }
 
   onRegister(event?: Event) {
