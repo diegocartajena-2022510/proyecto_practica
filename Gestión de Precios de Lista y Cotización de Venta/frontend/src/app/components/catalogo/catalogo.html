@@ -37,14 +37,15 @@
       <aside class="sidebar">
         <div class="side-card">
           <h3>Categorías</h3>
-          <button class="side-item active">Todos</button>
-          <button class="side-item">Internet</button>
-          <button class="side-item">Telefonía</button>
-          <button class="side-item">CCTV</button>
-          <button class="side-item">Control</button>
+          <!-- Corregido 'obtenerProductos' por 'Todos' -->
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'Todos'" (click)="filtrarPorCategoria('Todos')">Todos</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'PTP/PTMP'" (click)="filtrarPorCategoria('PTP')">PTP/PTMP</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'CCTV'" (click)="filtrarPorCategoria('CCTV')">CCTV</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'WLAN'" (click)="filtrarPorCategoria('WLAN')">WLAN</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'control de acceso'" (click)="filtrarPorCategoria('control de acceso')">control de acceso</button>
         </div>
 
-        <div class="side-card summary-card">
+        <div class="side-cardsummary-card">
           <h3>Resumen</h3>
           <ul>
             <li><span>Activos</span><strong>12</strong></li>
@@ -54,85 +55,53 @@
         </div>
       </aside>
 
+      <!-- Usamos productosFiltrados en lugar de listaProductos -->
       <div class="product-grid" aria-label="Espacios para productos">
-        <article class="product-slot">
+        <article class="product-slot" *ngFor="let prod of productosFiltrados" (click)="seleccionarProducto(prod)">
           <div class="slot-image" aria-hidden="true"></div>
           <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
+            <span class="slot-tag">{{ prod.categoria_nombre }}</span>
+            <h3>{{ prod.modelo }}</h3>
+            <p>{{ prod.descripcion }}</p>
             <div class="slot-meta">
               <span>Precio</span>
-              <strong>$0.00</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-slot">
-          <div class="slot-image" aria-hidden="true"></div>
-          <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
-            <div class="slot-meta">
-              <span>Precio</span>
-              <strong>$0.00</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-slot">
-          <div class="slot-image" aria-hidden="true"></div>
-          <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
-            <div class="slot-meta">
-              <span>Precio</span>
-              <strong>$0.00</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-slot">
-          <div class="slot-image" aria-hidden="true"></div>
-          <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
-            <div class="slot-meta">
-              <span>Precio</span>
-              <strong>$0.00</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-slot">
-          <div class="slot-image" aria-hidden="true"></div>
-          <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
-            <div class="slot-meta">
-              <span>Precio</span>
-              <strong>$0.00</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="product-slot">
-          <div class="slot-image" aria-hidden="true"></div>
-          <div class="slot-body">
-            <span class="slot-tag">Categoría</span>
-            <h3>Espacio para producto</h3>
-            <p>Área reservada para colocar la información del producto.</p>
-            <div class="slot-meta">
-              <span>Precio</span>
-              <strong>$0.00</strong>
+              <strong>{{prod.moneda}} {{ prod.precio_lista | number:'1.2-2' }}</strong>
             </div>
           </div>
         </article>
       </div>
     </section>
   </main>
+</div>
+
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
+  <div class="modal-content" *ngIf="productoSeleccionado" (click)="$event.stopPropagation()">
+
+    <div class="modal-hero">
+      <span class="modal-badge">{{ productoSeleccionado.categoria_nombre }}</span>
+      <h2>{{ productoSeleccionado.modelo || productoSeleccionado.nombre }}</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-image" aria-hidden="true"></div>
+
+      <div class="modal-copy">
+        <p class="modal-label">Resumen</p>
+        <p>{{ productoSeleccionado.descripcion }}</p>
+
+        <div class="modal-price-row">
+          <span>Precio de lista</span>
+          <strong>
+            {{ productoSeleccionado.moneda || '$' }}
+            {{ (productoSeleccionado.precio_lista ?? productoSeleccionado.precio ?? 0) | number:'1.2-2' }}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-acciones">
+      <button class="ghost-btn" type="button" (click)="cerrarModal()">Cerrar</button>
+      <button class="primary-btn" type="button" (click)="comprarPorProducto(productoSeleccionado)">Comprar / Cotizar</button>
+    </div>
+  </div>
 </div>
