@@ -30,7 +30,7 @@ create table productos(
     id_categoria int not null,
     stock int not null,
     modelo varchar(50),
-    descripcion varchar(100),
+    descripcion varchar(255),
     precio_lista decimal(10,2),
     moneda varchar(50),
     activo varchar(15),
@@ -187,7 +187,7 @@ create procedure sp_productos_create(
                 p_id_categoria int,
                 p_stock int,
                 p_modelo varchar(50),
-                p_descripcion varchar(100),
+                p_descripcion varchar(255),
                 p_precio_lista decimal(10,2),
                 p_moneda varchar(50),
                 p_activo varchar(15)
@@ -205,7 +205,7 @@ create procedure sp_productos_update(
                 p_id_categoria int,
                 p_stock int,
                 p_modelo varchar(50),
-                p_descripcion varchar(100),
+                p_descripcion varchar(255),
                 p_precio_lista decimal(10,2),
                 p_moneda varchar(50),
                 p_activo varchar(15)
@@ -313,6 +313,17 @@ begin
 end $$
 delimiter ;
 
+SELECT 
+  p.id_productos, 
+  p.modelo, 
+  p.descripcion, 
+  p.precio_lista, 
+  p.moneda, 
+  p.activo,
+  c.nombre AS categoria_nombre 
+FROM productos p
+JOIN categoria c ON p.id_categoria = c.id_categoria;
+
 -- REGISTROS DE PRUEBA USANDO PROCEDIMIENTOS ALMACENADOS --
 -- 10 registros por entidad
 
@@ -327,16 +338,12 @@ CALL sp_proveedores_create('SkyInfra', '5559900');
 CALL sp_proveedores_create('CablePro', '5552233');
 CALL sp_proveedores_create('LinkPlus', '5554455');
 
-CALL sp_categoria_create('CCTV');
-CALL sp_categoria_create('CCTV');
-CALL sp_categoria_create('WLAN');
+CALL sp_categoria_create('LAN');
 CALL sp_categoria_create('WLAN');
 CALL sp_categoria_create('PTP');
-CALL sp_categoria_create('PTP');
-CALL sp_categoria_create('control acceso');
-CALL sp_categoria_create('control acceso');
-CALL sp_categoria_create('WLAN');
+CALL sp_categoria_create('PTMP');
 CALL sp_categoria_create('CCTV');
+CALL sp_categoria_create('control de acceso');
 
 CALL sp_marcas_create('Ubiquiti');
 CALL sp_marcas_create('Ubiquiti');
@@ -349,16 +356,27 @@ CALL sp_marcas_create('dahua');
 CALL sp_marcas_create('mikroTik');
 CALL sp_marcas_create('mikroTik');
 
-CALL sp_productos_create(1, 1, 25, 'UAC-AP-Pro', 'Access point profesional', 699.00, 'USD', 'Activo');
-CALL sp_productos_create(1, 2, 18, 'UAP-AC-LR', 'Access point de interior', 540.00, 'USD', 'Activo');
-CALL sp_productos_create(2, 3, 12, 'DS-2CD2142G0', 'Cámara IP 4MP', 899.99, 'USD', 'Activo');
-CALL sp_productos_create(2, 1, 20, 'DS-2CE72DF3T', 'Cámara analógica inteligente', 650.00, 'USD', 'Activo');
-CALL sp_productos_create(3, 4, 8, 'PTO-Bridge 5G', 'Punto a punto 5G', 1500.00, 'USD', 'Activo');
-CALL sp_productos_create(3, 3, 14, 'PTO-Bridge 60G', 'Punto a punto 60G', 1700.00, 'USD', 'Activo');
-CALL sp_productos_create(4, 2, 30, 'CCR1009-7G-1C', 'Router de borde', 220.00, 'USD', 'Activo');
-CALL sp_productos_create(4, 4, 11, 'RB5009UG+', 'Switch compacto', 185.00, 'USD', 'Activo');
-CALL sp_productos_create(1, 1, 9, 'NanoBeam 5AC', 'Enlace inalámbrico', 120.00, 'USD', 'Activo');
-CALL sp_productos_create(2, 2, 16, 'TC-NVR-8P', 'Grabador de video', 740.00, 'USD', 'Activo');
+CALL sp_productos_create(1, 1, 25, 'UAC-AP-Pro', 'Access point profesional con doble banda 2.4/5 GHz, 802.11ac Wave 2, antenas internas y administración centralizada para redes empresariales.', 699.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 2, 18, 'UAP-AC-LR', 'Access point de interior con cobertura extendida, MU-MIMO, mejor rendimiento para entornos con varios usuarios y fácil integración con controladores de red.', 540.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 12, 'DS-2CD2142G0', 'Cámara IP 4MP con sensor CMOS, visión nocturna, detección de movimiento y transmisión de video en alta definición para vigilancia exterior.', 899.99, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 20, 'DS-2CE72DF3T', 'Cámara analógica inteligente con resolución HD, reducción de ruido, lente ajustable y diseño compacto para uso residencial y comercial.', 650.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 3, 8, 'PTO-Bridge 5G', 'Punto a punto 5G de alto rendimiento para enlaces de larga distancia con baja latencia, estabilidad y conectividad segura para respaldo de red.', 1500.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 3, 14, 'PTO-Bridge 60G', 'Punto a punto 60G de alta capacidad para transmisión robusta de datos, ideal para conectividad entre sedes y enlaces inalámbricos de fibra.', 1700.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 1, 30, 'CCR1009-7G-1C', 'Router de borde con 7 puertos Gigabit, alta capacidad de enrutamiento y conectividad estable para infraestructura de red crítica.', 220.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 1, 11, 'RB5009UG+', 'Switch compacto con puertos PoE y manejo eficiente del tráfico, ideal para desplegar cámaras y equipos de red en espacios reducidos.', 185.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 4, 9, 'NanoBeam 5AC', 'Enlace inalámbrico de alta ganancia diseñado para conexiones punto a punto con estabilidad, baja latencia y excelente rendimiento en ambientes con interferencia moderada.', 120.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 16, 'TC-NVR-8P', 'Grabador de video NVR con soporte para múltiples cámaras, almacenamiento local, gestión centralizada y monitoreo continuo 24/7 para seguridad integral.', 740.00, 'Q', 'Activo');
+
+CALL sp_productos_create(1, 2, 14, 'UAP-AC-M', 'Access point de interior con tecnología Wi-Fi 5, cobertura equilibrada y administración sencilla para pequeñas oficinas y puntos de acceso de trabajo.', 420.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 5, 11, 'DS-2CD2043G2', 'Cámara IP 4MP con lente fijo, detección inteligente, visión nocturna y diseño robusto para monitoreo exterior de alta confiabilidad.', 980.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 1, 22, 'RouterBoard hAP ac²', 'Router inalámbrico de alto rendimiento con dual-band, soporte para redes empresariales y conectividad estable para ambientes con múltiples usuarios.', 310.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 7, 'DVR-216', 'Grabador digital con capacidad para 16 canales, soporte para almacenamiento avanzado y control centralizado de cámaras CCTV.', 860.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 4, 9, 'MikroTik SXTsq', 'Dispositivo inalámbrico de exterior para enlaces punto a punto con diseño resistente y excelente rendimiento en condiciones climáticas exigentes.', 195.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 4, 26, 'PowerBeam 5AC', 'Antena de alta ganancia para enlaces inalámbricos con estabilidad, conexión de largo alcance y excelente relación costo-beneficio.', 260.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 1, 17, 'CRS326-24G-2S+', 'Switch gestionable con puertos Gigabit y alta capacidad de conmutación para redes de tráfico mediano y entornos corporativos.', 470.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 15, 'TC-IPC-3K', 'Cámara de seguridad con resolución 3K, alta sensibilidad y diseño compacto para monitoreo continuo en edificios y tiendas.', 610.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 3, 10, 'P2P-Bridge 10G', 'Enlace de fibra inalámbrica con capacidad alta para conexión entre sedes, buena latencia y estabilidad para tráfico de datos crítico.', 1320.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 2, 19, 'UAP-AC-Lite', 'Access point compacto y eficiente para despliegues ligeros con excelente cobertura y administración centralizada en redes pequeñas.', 480.00, 'Q', 'Activo');
 
 CALL sp_reglas_margen_create(1, 1, '25%', CURDATE());
 CALL sp_reglas_margen_create(1, 2, '28%', CURDATE());
