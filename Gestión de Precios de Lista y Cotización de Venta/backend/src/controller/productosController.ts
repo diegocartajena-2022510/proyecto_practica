@@ -6,6 +6,7 @@ export const productos_read=async(req:Request,res:Response)=>{
         const [rows]:any= await pool.query('CALL sp_productos_read()');
         res.json(rows[0]);
     }catch(error:any){
+        console.error("Error al obtener los productos:", error);
         res.status(500).json({error: error.message})
     }
 }
@@ -42,5 +43,6 @@ export const productos_delete=async(req:Request,res:Response)=>{
 
     
 }
+
 
 
