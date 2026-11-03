@@ -1,0 +1,143 @@
+<div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; Cotizador</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
+      <button class="nav-item" (click)="onCotizar()">Cotizar</button>
+      <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn active">Perfil</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="content-panel profile-content">
+    <section class="profile-hero">
+      <div class="profile-summary">
+        <div class="avatar">EG</div>
+        <div class="profile-copy">
+          <span class="eyebrow">Perfil de usuario</span>
+          <h1>{{ datosUsuario.nombre }}</h1>
+          <p>{{ datosUsuario.correo }}</p>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="primary-btn">Editar perfil</button>
+        <button class="secondary-btn">Cambiar contraseña</button>
+      </div>
+    </section>
+
+    <section class="profile-grid">
+      <article class="panel profile-panel">
+        <div class="panel-header">
+          <h2>Información personal</h2>
+          <span>Cuenta</span>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span>Nombre completo</span>
+            <strong>{{ datosUsuario.nombre }}</strong>
+          </div>
+          <div class="info-item">
+            <span>Cargo</span>
+            <strong>{{ datosUsuario.cargo }}</strong>
+          </div>
+          <div class="info-item">
+            <span>Correo</span>
+            <strong>{{ datosUsuario.correo }}</strong>
+          </div>
+          <div class="info-item">
+            <span>Teléfono</span>
+            <strong>{{ datosUsuario.telefono }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel stats-panel">
+        <div class="panel-header">
+          <h2>Resumen</h2>
+          <span>Este mes</span>
+        </div>
+
+        <div class="stats-stack">
+          <div class="stat-box blue">
+            <span>Cotizaciones</span>
+            <strong>{{ datosUsuario.cotizaciones }}</strong>
+          </div>
+          <div class="stat-box green">
+            <span>Ventas</span>
+            <strong>{{ datosUsuario.ventas }}</strong>
+          </div>
+          <div class="stat-box purple">
+            <span>Éxito</span>
+            <strong>{{ datosUsuario.tasa }}</strong>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="panel settings-panel">
+        <div class="panel-header">
+          <h2>Preferencias</h2>
+          <span>Ajustes</span>
+        </div>
+
+        <ul class="settings-list">
+          <li>
+            <span>Notificaciones por correo</span>
+            <em>Activadas</em>
+          </li>
+          <li>
+            <span>Alertas de precios</span>
+            <em>Personalizadas</em>
+          </li>
+          <li>
+            <span>Acceso a reportes</span>
+            <em>Completo</em>
+          </li>
+        </ul>
+      </article>
+
+      <article class="panel activity-panel">
+        <div class="panel-header">
+          <h2>Actividad reciente</h2>
+          <span>Últimos 7 días</span>
+        </div>
+
+        <ul class="activity-list">
+          <li>
+            <div>
+              <strong>Actualizó la cotización de fibra óptica</strong>
+              <small>Hace 2 horas</small>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Revisó catálogo de CCTV</strong>
+              <small>Hoy</small>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Generó propuesta para Inalámbrica S.A.</strong>
+              <small>Ayer</small>
+            </div>
+          </li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</div>
