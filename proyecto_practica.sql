@@ -179,6 +179,52 @@ create procedure sp_productos_read()
 	end $$
 delimiter ;
 
+-- buscar productos por modelo, descripcion, marca o categoria
+delimiter $$
+create procedure sp_productos_buscar(in p_busqueda varchar(100))
+begin
+    if p_busqueda is null or trim(p_busqueda) = '' then
+        select
+            p.id_productos,
+            p.id_marca,
+            m.nombre as marca,
+            p.id_categoria,
+            c.nombre as categoria,
+            p.stock,
+            p.modelo,
+            p.descripcion,
+            p.precio_lista,
+            p.moneda,
+            p.activo
+        from productos p
+        left join marcas m on m.id_marca = p.id_marca
+        left join categoria c on c.id_categoria = p.id_categoria
+        order by p.modelo;
+    else
+        select
+            p.id_productos,
+            p.id_marca,
+            m.nombre as marca,
+            p.id_categoria,
+            c.nombre as categoria,
+            p.stock,
+            p.modelo,
+            p.descripcion,
+            p.precio_lista,
+            p.moneda,
+            p.activo
+        from productos p
+        left join marcas m on m.id_marca = p.id_marca
+        left join categoria c on c.id_categoria = p.id_categoria
+        where lower(p.modelo) like concat('%', lower(trim(p_busqueda)), '%')
+           or lower(p.descripcion) like concat('%', lower(trim(p_busqueda)), '%')
+           or lower(m.nombre) like concat('%', lower(trim(p_busqueda)), '%')
+           or lower(c.nombre) like concat('%', lower(trim(p_busqueda)), '%')
+        order by p.modelo;
+    end if;
+end $$
+delimiter ;
+
 -- agregar productos
 
 delimiter $$
@@ -231,6 +277,7 @@ delimiter $$
 		delete from productos where id_productos=p_id_productos;
     end$$
 delimiter ;
+
 
 -- PROCEDIMIENTOS ALMACENADOS DE REGLAS MARGEN--
 
