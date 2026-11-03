@@ -37,9 +37,9 @@
       <aside class="sidebar">
         <div class="side-card">
           <h3>Categorías</h3>
-          <!-- Corregido 'obtenerProductos' por 'Todos' -->
           <button class="side-item" [class.active]="categoriaSeleccionada === 'Todos'" (click)="filtrarPorCategoria('Todos')">Todos</button>
-          <button class="side-item" [class.active]="categoriaSeleccionada === 'PTP/PTMP'" (click)="filtrarPorCategoria('PTP')">PTP/PTMP</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'PTMP'" (click)="filtrarPorCategoria('PTMP')">PTMP</button>
+          <button class="side-item" [class.active]="categoriaSeleccionada === 'PTP'" (click)="filtrarPorCategoria('PTP')">PTP</button>
           <button class="side-item" [class.active]="categoriaSeleccionada === 'CCTV'" (click)="filtrarPorCategoria('CCTV')">CCTV</button>
           <button class="side-item" [class.active]="categoriaSeleccionada === 'WLAN'" (click)="filtrarPorCategoria('WLAN')">WLAN</button>
           <button class="side-item" [class.active]="categoriaSeleccionada === 'control de acceso'" (click)="filtrarPorCategoria('control de acceso')">control de acceso</button>
@@ -55,7 +55,6 @@
         </div>
       </aside>
 
-      <!-- Usamos productosFiltrados en lugar de listaProductos -->
       <div class="product-grid" aria-label="Espacios para productos">
         <article class="product-slot" *ngFor="let prod of productosFiltrados" (click)="seleccionarProducto(prod)">
           <div class="slot-image" aria-hidden="true"></div>
