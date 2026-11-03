@@ -26,6 +26,9 @@ export class Principal {
   onCotizar(){
     this.router.navigate(['/cotizar']);
   }
+  onPerfil(){
+    this.router.navigate(['/perfil']);
+  }
   OnSobreNosotros(){
     this.router.navigate(['/sobre-nosotros']);
   }
