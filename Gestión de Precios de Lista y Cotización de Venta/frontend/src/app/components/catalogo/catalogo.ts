@@ -1,4 +1,4 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth';
@@ -15,16 +15,19 @@ export class Catalogo {
   listaProductos: any[] = [];
   productosFiltrados: any[] = [];
   categoriaSeleccionada: string = 'Todos';
-  productoSeleccionado:any=null;
+  productoSeleccionado:any=null;  
   isModalOpen = false;
 
   constructor(private auth: AuthService, 
               private router: Router , 
               private productosService: productosService,
-             @Inject(PLATFORM_ID) private platformId: Object) {}
+             @Inject(PLATFORM_ID) private platformId: Object,
+              private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.obtenerProductos();
+    if(isPlatformBrowser(this.platformId)){
+      this.obtenerProductos(); 
+    } 
   }
 
   obtenerProductos() {
@@ -32,6 +35,7 @@ export class Catalogo {
       next: (res: any) => {
         this.listaProductos = res;
         this.productosFiltrados=res;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
@@ -77,18 +81,5 @@ export class Catalogo {
   onSobreNosotros(){
     this.router.navigate(['/sobre-nosotros']);
   }
-
-  onWlan(){
-    this.router.navigate(['/wlan']);
-  }
-  onCctv(){
-    this.router.navigate(['/cctv']);
-  }
-  onPtpPtpm(){
-    this.router.navigate(['/ptp-ptmp']);
-  }
-  onControlAcceso(){
-    this.router.navigate(['/control-acceso']);
-  } 
 
 }
