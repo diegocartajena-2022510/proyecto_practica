@@ -31,6 +31,9 @@ export class Login {
     this.auth.login(credenciales).subscribe({
       next: (res: any) => {
         console.log('Login Exisoto:', res);
+        if (res && res.usuario) {
+          localStorage.setItem('usuario', JSON.stringify(res.usuario));
+        }
         this.router.navigate(['/principal']);
       },
       error: (err) => {
