@@ -97,7 +97,7 @@ button {
 }
 
 .ghost-btn,
-.primary-btn {
+.primary-btn,.logout-btn {
   border: none;
   border-radius: 12px;
   padding: 10px 16px;
@@ -117,6 +117,10 @@ button {
   background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   color: #fff;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+.logout-btn {
+  background: #111827;
+  color: #fff;
 }
 
 .ghost-btn:hover,
