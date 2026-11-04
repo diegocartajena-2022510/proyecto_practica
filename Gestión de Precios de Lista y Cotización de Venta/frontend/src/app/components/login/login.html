@@ -43,6 +43,11 @@
         <label for="password-register">Contraseña</label>
         <input type="password" id="password-register" [(ngModel)]="pasword" name="pasword" placeholder="********" required>
       </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="number" id="telefono" [(ngModel)]="telefono" name="telefono" placeholder="12345678" required>
+      </div>
     </form>
     <button type="submit" class="btn-registrar" (click)="onRegisterSubmit()">Registrarse</button>
       <button type="button" class="btn-cancelar" (click)="closeRegister()">Cancelar</button>
