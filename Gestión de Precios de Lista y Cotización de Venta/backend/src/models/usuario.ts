@@ -3,4 +3,5 @@ export interface usuario{
     nombre: String;
     correo: String;
     pasword:String; 
+    telefono:number;
 }
