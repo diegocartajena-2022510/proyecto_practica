@@ -5,7 +5,8 @@ create table usuario(
 	id_usuario int primary key auto_increment not null,
     nombre varchar(50),
     correo varchar(50) unique not null,
-    pasword varchar(50) 
+    pasword varchar(50),
+    telefono int
 );
 
 create table proveedores(
@@ -333,9 +334,9 @@ delimiter ;
 
 
 delimiter $$
-	create procedure sp_usuarios_create(u_nombre varchar(50),u_correo varchar(50),u_pasword varchar(50))
+	create procedure sp_usuarios_create(u_nombre varchar(50),u_correo varchar(50),u_pasword varchar(50), u_telefono int)
     begin
-		insert into usuario(nombre,correo,pasword) values (u_nombre,u_correo,u_pasword);
+		insert into usuario(nombre,correo,pasword,telefono) values (u_nombre,u_correo,u_pasword,u_telefono);
     end $$
 delimiter ;
 
@@ -347,7 +348,7 @@ CREATE PROCEDURE sp_usuarios_login(
 )
 BEGIN
     -- Este busca si el usuario existe con ese correo y contraseña
-    SELECT id_usuario, nombre, correo 
+    SELECT id_usuario, nombre, correo, telefono
     FROM usuario 
     WHERE correo = u_correo AND pasword = u_pasword;
 END $$
@@ -360,6 +361,7 @@ begin
 end $$
 delimiter ;
 
+-- Inner join para mostrar categoria
 SELECT 
   p.id_productos, 
   p.modelo, 
@@ -424,6 +426,43 @@ CALL sp_productos_create(4, 1, 17, 'CRS326-24G-2S+', 'Switch gestionable con pue
 CALL sp_productos_create(2, 5, 15, 'TC-IPC-3K', 'Cámara de seguridad con resolución 3K, alta sensibilidad y diseño compacto para monitoreo continuo en edificios y tiendas.', 610.00, 'Q', 'Activo');
 CALL sp_productos_create(3, 3, 10, 'P2P-Bridge 10G', 'Enlace de fibra inalámbrica con capacidad alta para conexión entre sedes, buena latencia y estabilidad para tráfico de datos crítico.', 1320.00, 'Q', 'Activo');
 CALL sp_productos_create(1, 2, 19, 'UAP-AC-Lite', 'Access point compacto y eficiente para despliegues ligeros con excelente cobertura y administración centralizada en redes pequeñas.', 480.00, 'Q', 'Activo');
+
+-- 5 productos por categoría
+CALL sp_productos_create(1, 1, 40, 'LAN-Switch-24G', 'Switch gestionable de 24 puertos Gigabit con alta capacidad de conmutación para redes corporativas y backbone interno.', 320.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 1, 35, 'LAN-Router-Edge', 'Router empresarial con capacidad de enrutamiento robusto para tráfico interno y conectividad estable entre sedes.', 410.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 1, 28, 'LAN-Access-8P', 'Access point PoE de alta densidad para entornos con múltiples dispositivos conectados a la misma red.', 360.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 1, 22, 'LAN-POE-16', 'Distribuidor PoE para alimentación centralizada de cámaras, telefonía y equipos de red dentro de la infraestructura.', 280.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 1, 18, 'LAN-Mini-Switch', 'Switch compacto para despliegues pequeños con puertos Gigabit y administración sencilla para oficinas.', 210.00, 'Q', 'Activo');
+
+CALL sp_productos_create(1, 2, 24, 'WLAN-AP-Indoor', 'Access point de interior de alta velocidad con cobertura uniforme para oficinas y espacios de trabajo.', 520.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 2, 20, 'WLAN-AP-Outdoor', 'Access point exterior resistente con cobertura amplia y excelente rendimiento para patios y accesos.', 690.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 2, 16, 'WLAN-Bridge-AC', 'Bridge inalámbrico de alta potencia para enlaces Wi-Fi con estabilidad y baja latencia en entornos densos.', 390.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 2, 14, 'WLAN-Client-5G', 'Cliente inalámbrico 5G para conexiones de alta velocidad en redes distribuidas y campus.', 430.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 2, 18, 'WLAN-CPE-High', 'CPE de alto rendimiento para conexión inalámbrica de largo alcance con cobertura estable y fácil administración.', 570.00, 'Q', 'Activo');
+
+CALL sp_productos_create(1, 3, 12, 'PTP-Link-10G', 'Enlace punto a punto de 10G para conexiones rápidas entre edificios y nodos críticos de la red.', 1500.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 3, 9, 'PTP-Bridge-60G', 'Puente punto a punto de 60G pensado para enlaces de alta capacidad con máxima estabilidad.', 1700.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 3, 11, 'PTP-LongRange', 'Equipo punto a punto de largo alcance para cubrir distancias extensas con mínima pérdida de señal.', 1280.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 3, 10, 'PTP-Tower-5G', 'Solución de torre para enlaces de alta velocidad con conectividad robusta y baja latencia.', 1425.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 3, 13, 'PTP-Fiber-40G', 'Enlace punto a punto con capacidad 40G para transferencia de datos intensiva y respaldo de red.', 1600.00, 'Q', 'Activo');
+
+CALL sp_productos_create(2, 4, 15, 'PTMP-Base-5G', 'Estación base punto multipunto para conectar múltiples clientes con alta capacidad y rendimientos estables.', 920.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 4, 18, 'PTMP-Client-2', 'Cliente multipunto con diseño compacto para integración en redes Wi-Fi distribuidas y cobertura extendida.', 470.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 4, 12, 'PTMP-Backhaul', 'Equipo de backhaul para tráfico intenso entre nodos remotos en redes de telecomunicaciones.', 880.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 4, 17, 'PTMP-Outdoor-AC', 'Equipo multipunto exterior con alta ganancia y resistencia para entornos con interferencia moderada.', 540.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 4, 14, 'PTMP-Access-Plus', 'Solución multipunto avanzada para acceso masivo con alta estabilidad y fácil administración.', 610.00, 'Q', 'Activo');
+
+CALL sp_productos_create(1, 5, 30, 'CCTV-4MP-IR', 'Cámara IP 4MP con visión nocturna, detección de movimiento y diseño resistente para vigilancia exterior.', 780.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 5, 26, 'CCTV-8MP-Turret', 'Cámara turretera 8MP con lente preciso, gran capacidad de detalles y monitoreo continuo.', 990.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 5, 20, 'CCTV-NVR-16', 'Grabador NVR con capacidad para 16 canales y almacenamiento eficiente para seguridad total.', 860.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 5, 18, 'CCTV-DVR-8', 'DVR compacto para monitoreo continuo con variedad de canales para instalaciones pequeñas y medianas.', 720.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 5, 14, 'CCTV-Fisheye-360', 'Cámara omnidireccional 360 con cobertura total para monitoreo de áreas amplias sin puntos ciegos.', 1040.00, 'Q', 'Activo');
+
+CALL sp_productos_create(1, 6, 25, 'AC-Reader-Pro', 'Lector de acceso profesional para control seguro de ingresos en edificios, oficinas y zonas restringidas.', 180.00, 'Q', 'Activo');
+CALL sp_productos_create(2, 6, 22, 'AC-Panel-32', 'Panel de control con capacidad para múltiples accesos, alarmas y gestión centralizada.', 430.00, 'Q', 'Activo');
+CALL sp_productos_create(3, 6, 19, 'AC-Controller-8', 'Controlador de acceso para 8 puertas con alta seguridad y administración eficiente.', 520.00, 'Q', 'Activo');
+CALL sp_productos_create(4, 6, 20, 'AC-Door-Exit', 'Equipo de salida para gestión de puertas y monitoreo de accesos autorizados.', 210.00, 'Q', 'Activo');
+CALL sp_productos_create(1, 6, 18, 'AC-Alarm-Reader', 'Dispositivo integrado con sensor de alarma y lector para reforzar la seguridad de accesos críticos.', 260.00, 'Q', 'Activo');
 
 CALL sp_reglas_margen_create(1, 1, '25%', CURDATE());
 CALL sp_reglas_margen_create(1, 2, '28%', CURDATE());
