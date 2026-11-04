@@ -16,6 +16,7 @@ export class Login {
   correo: string = '';
   pasword: string = '';
   nombre: string = '';
+  telefono: number = 0;
   errorMessage: string = '';
   isRegisterOpen = false;
 
@@ -49,7 +50,7 @@ export class Login {
   }
 
   onRegisterSubmit(){
-    if(!this.nombre || !this.correo || !this.pasword){
+    if(!this.nombre || !this.correo || !this.pasword || !this.telefono){
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
     }else if(!this.isValidEmail(this.correo)){
@@ -58,9 +59,11 @@ export class Login {
     }else if(this.pasword.length < 6){
       this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
       return;
-    }
-    else{
-      console.log('Registro Exitoso:', { nombre: this.nombre, correo: this.correo, pasword: this.pasword });
+    }else if(this.telefono.toString().length < 8 || this.telefono.toString().length > 8){
+      this.errorMessage = 'este numero de telefono no es valido, intente de nuevo';
+      return;
+    }else{
+      console.log('Registro Exitoso:', { nombre: this.nombre, correo: this.correo, pasword: this.pasword, telefono: this.telefono });
       this.submitRegister();
     }
   }
@@ -70,7 +73,7 @@ export class Login {
   }
 
   submitRegister() {
-    const credenciales = { nombre: this.nombre, correo: this.correo, pasword: this.pasword };
+    const credenciales = { nombre: this.nombre, correo: this.correo, pasword: this.pasword, telefono: this.telefono };
     this.auth.register(credenciales).subscribe({
       next: (res: any) => {
         console.log('Registro Exitoso:', res);
