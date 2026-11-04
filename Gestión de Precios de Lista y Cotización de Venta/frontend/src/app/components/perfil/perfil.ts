@@ -57,7 +57,4 @@ export class Perfil implements OnInit {
   OnSobreNosotros() {
     this.router.navigate(['/sobre-nosotros']);
   }
-  onVentas(){
-    this.router.navigate(['/ventas']);
-  }
 }
