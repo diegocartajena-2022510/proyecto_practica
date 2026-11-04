@@ -13,13 +13,13 @@ export class Perfil implements OnInit {
   datosUsuario: any = {
     nombre: '',
     correo: '',
+    telefono: '',
     cargo: 'Administrador de Ventas',
-    telefono: '+502 0000-0000',
     cotizaciones: 24,
     ventas: 12,
     tasa: '85%'
   };
-
+  
   constructor(
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -56,5 +56,8 @@ export class Perfil implements OnInit {
 
   OnSobreNosotros() {
     this.router.navigate(['/sobre-nosotros']);
+  }
+  onVentas(){
+    this.router.navigate(['/ventas']);
   }
 }
