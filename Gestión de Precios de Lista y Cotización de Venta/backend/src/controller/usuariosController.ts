@@ -28,8 +28,9 @@ export const usuario_register = async (req: Request, res: Response) => {
     const nombre = String(req.body?.nombre ?? '').trim();
     const correo = String(req.body?.correo ?? '').trim();
     const pasword = String(req.body?.pasword ?? '').trim();
+    const telefono = Number(req.body?.telefono ?? 0);
 
-    if (!nombre || !correo || !pasword) {
+    if (!nombre || !correo || !pasword || !telefono) {
         return res.status(400).json({ error: 'Por favor, complete todos los campos' });
     }
 
@@ -53,7 +54,7 @@ export const usuario_register = async (req: Request, res: Response) => {
             });
         }
 
-        await pool.query('CALL sp_usuarios_create(?, ?, ?)', [nombre, correo, pasword]);
+        await pool.query('CALL sp_usuarios_create(?, ?, ?, ?)', [nombre, correo, pasword, telefono]);
         return res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
     } catch (error: any) {
         if (error?.errno === 1062 || error?.code === 'ER_DUP_ENTRY') {
