@@ -65,4 +65,15 @@ export const usuario_register = async (req: Request, res: Response) => {
 
         return res.status(500).json({ error: error.message || 'No se pudo registrar el usuario' });
     }
+
+}
+
+export const usuarios_update= async(req:Request, res:Response)=>{
+    const {id_usuario,nombre,correo,pasword,telefono}=req.body;
+    try {
+        await pool.query('CALL sp_usuarios_update(?,?,?,?,?)',[id_usuario,nombre,correo,pasword,telefono]);
+        res.json({mensaje:'Usuario actualizado correctamente'});
+    } catch (error:any) {
+        res.status(500).json({error:error.message});
+    }
 }
