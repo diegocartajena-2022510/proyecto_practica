@@ -62,6 +62,7 @@ export class Catalogo {
       this.productosFiltrados = this.listaProductos.filter(producto => producto.categoria_nombre === categoria);
     }
   }
+
   
 
   seleccionarProducto(producto: any) {
