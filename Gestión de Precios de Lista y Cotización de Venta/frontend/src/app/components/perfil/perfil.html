@@ -7,19 +7,16 @@
         <span>Catálogo &amp; Cotizador</span>
       </div>
     </div>
-
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="onCotizar()">Cotizar</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
     </nav>
-
     <div class="header-actions">
-      <button class="ghost-btn active">Perfil</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
-
   <main class="content-panel profile-content">
     <section class="profile-hero">
       <div class="profile-summary">
@@ -32,10 +29,50 @@
       </div>
 
       <div class="profile-actions">
-        <button class="primary-btn">Editar perfil</button>
-        <button class="secondary-btn">Cambiar contraseña</button>
+        <button class="primary-btn" type="button" (click)="abrirModalEditar()">Editar perfil</button>
       </div>
     </section>
+
+    <div class="modal-backdrop" *ngIf="mostrarModal" (click)="cerrarModalEditar()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow modal-eyebrow">Editar perfil</span>
+            <h2>Actualiza tu información</h2>
+          </div>
+          <button class="icon-close" type="button" aria-label="Cerrar" (click)="cerrarModalEditar()">×</button>
+        </div>
+
+        <form class="profile-form" (ngSubmit)="guardarPerfil()">
+          <div class="form-grid">
+            <label class="field">
+              <span>Nombre completo</span>
+              <input type="text" [(ngModel)]="perfilEditado.nombre" name="nombre" placeholder="Tu nombre" />
+            </label>
+
+            <label class="field">
+              <span>Correo electrónico</span>
+              <input type="email" [(ngModel)]="perfilEditado.correo" name="correo" placeholder="correo@ejemplo.com" />
+            </label>
+
+            <label class="field">
+              <span>Teléfono</span>
+              <input type="tel" [(ngModel)]="perfilEditado.telefono" name="telefono" placeholder="(555) 123 4567" />
+            </label>
+
+            <label class="field">
+              <span>Cargo</span>
+              <input type="text" [(ngModel)]="perfilEditado.cargo" name="cargo" placeholder="Cargo" />
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button class="secondary-btn" type="button" (click)="cerrarModalEditar()">Cancelar</button>
+            <button class="primary-btn" type="submit" (click)="guardarCambios()">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <section class="profile-grid">
       <article class="panel profile-panel">
@@ -50,8 +87,8 @@
             <strong>{{ datosUsuario.nombre }}</strong>
           </div>
           <div class="info-item">
-            <span>Cargo</span>
-            <strong>{{ datosUsuario.cargo }}</strong>
+            <span>fecha de creacion</span>
+            <strong>{{ datosUsuario.fecha_creacion | date:'dd/MM/yyyy' }}</strong>
           </div>
           <div class="info-item">
             <span>Correo</span>
