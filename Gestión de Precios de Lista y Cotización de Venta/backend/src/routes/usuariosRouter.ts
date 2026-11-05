@@ -1,5 +1,6 @@
 import { usuarios_login } from "../controller/usuariosController";
 import {usuario_register} from "../controller/usuariosController";
+import { usuarios_update } from "../controller/usuariosController";
 import { Router } from "express";
 import db from "../config/db";
 
@@ -7,6 +8,7 @@ const router= Router();
 
 router.post('/login',usuarios_login);
 router.post('/register', usuario_register);
+router.put('/actualizar-perfil', usuarios_update);
 
 router.post('/usuarios/registrar', async (req, res) => {
   const nombre = String(req.body?.nombre ?? '').trim();
