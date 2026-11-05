@@ -347,11 +347,10 @@ CREATE PROCEDURE sp_usuarios_login(
     IN u_pasword VARCHAR(50)
 )
 BEGIN
-    -- Este busca si el usuario existe con ese correo y contraseña
-    SELECT id_usuario, nombre, correo, telefono
+    SELECT id_usuario, nombre, correo, telefono,fecha_creacion
     FROM usuario 
     WHERE correo = u_correo AND pasword = u_pasword;
-END $$
+END $$sp_usuarios_login
 DELIMITER ;
 
 delimiter $$
@@ -361,7 +360,24 @@ begin
 end $$
 delimiter ;
 
--- Inner join para mostrar categoria
+DELIMITER $$
+CREATE PROCEDURE sp_usuarios_update(
+    IN u_id_usuario INT, 
+    IN u_nombre VARCHAR(50), 
+    IN u_correo VARCHAR(50), 
+    IN u_pasword VARCHAR(50),
+    IN u_telefono INT
+)
+BEGIN
+    UPDATE usuario
+    SET nombre = u_nombre,
+        correo = u_correo,
+        pasword = u_pasword,
+        telefono = u_telefono
+    WHERE id_usuario = u_id_usuario;
+END $$
+DELIMITER ;
+
 SELECT 
   p.id_productos, 
   p.modelo, 
@@ -427,7 +443,6 @@ CALL sp_productos_create(2, 5, 15, 'TC-IPC-3K', 'Cámara de seguridad con resolu
 CALL sp_productos_create(3, 3, 10, 'P2P-Bridge 10G', 'Enlace de fibra inalámbrica con capacidad alta para conexión entre sedes, buena latencia y estabilidad para tráfico de datos crítico.', 1320.00, 'Q', 'Activo');
 CALL sp_productos_create(1, 2, 19, 'UAP-AC-Lite', 'Access point compacto y eficiente para despliegues ligeros con excelente cobertura y administración centralizada en redes pequeñas.', 480.00, 'Q', 'Activo');
 
--- 5 productos por categoría
 CALL sp_productos_create(1, 1, 40, 'LAN-Switch-24G', 'Switch gestionable de 24 puertos Gigabit con alta capacidad de conmutación para redes corporativas y backbone interno.', 320.00, 'Q', 'Activo');
 CALL sp_productos_create(2, 1, 35, 'LAN-Router-Edge', 'Router empresarial con capacidad de enrutamiento robusto para tráfico interno y conectividad estable entre sedes.', 410.00, 'Q', 'Activo');
 CALL sp_productos_create(3, 1, 28, 'LAN-Access-8P', 'Access point PoE de alta densidad para entornos con múltiples dispositivos conectados a la misma red.', 360.00, 'Q', 'Activo');
