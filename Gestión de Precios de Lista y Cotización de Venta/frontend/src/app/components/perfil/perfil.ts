@@ -85,6 +85,7 @@ export class Perfil implements OnInit {
   }
 
   guardarCambios() {
+    this.datosUsuario={...this.datosUsuario, ...this.perfilEditado};
     this.usuarioService.actualizarUsuario(this.datosUsuario).subscribe({
       next: (res: any) => {
         alert('¡Perfil actualizado con éxito!');
@@ -92,6 +93,7 @@ export class Perfil implements OnInit {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('usuario', JSON.stringify(this.datosUsuario));
         }
+        this.cerrarModalEditar();
       },
       error: (err) => {
         console.error('Error al actualizar:', err);
