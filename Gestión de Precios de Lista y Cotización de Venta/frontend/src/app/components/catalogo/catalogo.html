@@ -4,7 +4,7 @@
       <div class="brand-mark">N</div>
       <div class="brand-copy">
         <strong>Nexaro</strong>
-        <span>Catálogo &amp; cotizador</span>
+        <span>Catálogo &amp; Cotizador</span>
       </div>
     </div>
 
@@ -32,7 +32,10 @@
       </div>
     </section>
 
-    <section class="catalog-layout">
+    <!-- Estructura de 3 Columnas: [Categorías y Resumen] | [Productos de BD] | [Tu Cotización (Derecha)] -->
+    <section class="catalog-layout-cart">
+      
+      <!-- 1. BARRA LATERAL IZQUIERDA: Categorías y Resumen -->
       <aside class="sidebar">
         <div class="side-card">
           <h3>Categorías</h3>
@@ -45,7 +48,7 @@
         </div>
 
         <div class="side-cardsummary-card">
-          <h3>Resumen</h3>
+          <h3>Resumen BD</h3>
           <ul>
             <li><span>Activos</span><strong>{{ totalActivos }}</strong></li>
             <li><span>En revisión</span><strong>{{ totalRevision }}</strong></li>
@@ -54,6 +57,7 @@
         </div>
       </aside>
 
+      <!-- 2. CENTRO: Listado de Productos de la Base de Datos -->
       <div class="product-grid" aria-label="Espacios para productos">
         <article class="product-slot" *ngFor="let prod of productosFiltrados" (click)="seleccionarProducto(prod)">
           <div class="slot-image" aria-hidden="true"></div>
@@ -62,16 +66,63 @@
             <h3>{{ prod.modelo }}</h3>
             <p>{{ prod.descripcion }}</p>
             <div class="slot-meta">
-              <span>Precio</span>
-              <strong>{{prod.moneda}} {{ prod.precio_lista | number:'1.2-2' }}</strong>
+              <div>
+                <span>Precio</span>
+                <strong>{{ prod.moneda || '$' }} {{ (prod.precio_lista ?? prod.precio ?? 0) | number:'1.2-2' }}</strong>
+              </div>
+              <button class="primary-btn small-btn" (click)="agregarAlCarrito(prod, $event)">+ Agregar</button>
             </div>
           </div>
         </article>
       </div>
+
+      <!-- 3. DERECHA: La barra de cotización flotante (Sticky) que querías -->
+      <aside class="summary-card-right">
+        <div class="card-header">
+          <h2>Tu Cotización</h2>
+          <span>{{ itemsCotizacion.length }} ítems</span>
+        </div>
+
+        <div class="service-list">
+          <div *ngIf="itemsCotizacion.length === 0" class="empty-cart">
+            <p>No has seleccionado ningún producto todavía.</p>
+          </div>
+
+          <article *ngFor="let item of itemsCotizacion; let i = index" class="quote-item">
+            <div>
+              <strong>{{ item.producto.modelo }}</strong>
+              <small>Cant: {{ item.cantidad }} x ${{ item.producto.precio_lista ?? item.producto.precio }}</small>
+            </div>
+            <div class="item-actions-right">
+              <span>${{ (item.producto.precio_lista ?? item.producto.precio ?? 0) * item.cantidad | number:'1.2-2' }}</span>
+              <button class="btn-remove" (click)="removerItem(i)" title="Eliminar">×</button>
+            </div>
+          </article>
+        </div>
+
+        <div class="field-group-cart" style="margin-bottom: 14px;">
+          <label style="font-size: 0.75rem; font-weight: 700; color: #334155; text-transform: uppercase;">Moneda</label>
+          <select [(ngModel)]="monedaSeleccionada" name="moneda" style="width: 100%; border: 1px solid #dbe4f0; border-radius: 10px; padding: 8px; background: #f8fafc; margin-top: 4px;">
+            <option>MXN</option>
+            <option>QTZL</option>
+            <option>USD</option>
+          </select>
+        </div>
+
+        <div class="totals">
+          <div><span>Subtotal</span><strong>${{ subtotal | number:'1.2-2' }}</strong></div>
+          <div><span>IVA (16%)</span><strong>${{ iva | number:'1.2-2' }}</strong></div>
+          <div class="grand-total"><span>Total estimado</span><strong>${{ total | number:'1.2-2' }} {{ monedaSeleccionada }}</strong></div>
+        </div>
+
+        <button class="primary-btn wide" (click)="enviarCotizacion()">Enviar solicitud</button>
+      </aside>
+
     </section>
   </main>
 </div>
 
+<!-- Modal de detalle de producto -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
   <div class="modal-content" *ngIf="productoSeleccionado" (click)="$event.stopPropagation()">
 
@@ -99,7 +150,7 @@
 
     <div class="modal-acciones">
       <button class="ghost-btn" type="button" (click)="cerrarModal()">Cerrar</button>
-      <button class="primary-btn" type="button" (click)="comprarPorProducto(productoSeleccionado)">Comprar / Cotizar</button>
+      <button class="primary-btn" type="button" data-id="comprar-cotizar-btn" (click)="comprarPorProducto(productoSeleccionado)">Agregar a la cotización</button>
     </div>
   </div>
 </div>
