@@ -12,17 +12,21 @@ router.put('/actualizar-perfil', usuarios_update);
 
 router.post('/usuarios/registrar', async (req, res) => {
   const nombre = String(req.body?.nombre ?? '').trim();
-  const contrasena = String(req.body?.contrasena ?? '').trim();
-  const edad = req.body?.edad;
   const correo = String(req.body?.correo ?? '').trim();
+  const pasword = String(req.body?.pasword ?? req.body?.password ?? req.body?.contrasena ?? '').trim();
+  const telefono = Number(req.body?.telefono ?? 0);
 
-  if (!nombre || !contrasena || !correo) {
+  if (!nombre || !pasword || !correo || !telefono) {
     return res.status(400).json({ mensaje: 'Por favor, complete todos los campos' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(correo)) {
     return res.status(400).json({ mensaje: 'Por favor, ingrese un correo válido' });
+  }
+
+  if (pasword.length < 6) {
+    return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres' });
   }
 
   try {
@@ -37,11 +41,11 @@ router.post('/usuarios/registrar', async (req, res) => {
       });
     }
 
-    await db.query('CALL sp_registrar_usuario_conductor(?, ?, ?, ?)', [
+    await db.query('CALL sp_usuarios_create(?, ?, ?, ?)', [
       nombre,
-      contrasena,
-      edad,
-      correo
+      correo,
+      pasword,
+      telefono
     ]);
 
     return res.status(201).json({ mensaje: 'Usuario registrado con éxito' });
