@@ -4,30 +4,30 @@ import pool from "../config/db";
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
 export const usuarios_login = async (req: Request, res: Response) => {
-    const { correo, pasword } = req.body;
+    const correo = String(req.body?.correo ?? '').trim();
+    const pasword = String(req.body?.pasword ?? req.body?.password ?? '').trim();
+
     try {
         const [rows]: any = await pool.query('CALL sp_usuarios_login(?, ?)', [correo, pasword]);
-        
-        
-        const usuarioEncontrado = rows[0];
+        const usuarioEncontrado = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
 
-        if (!usuarioEncontrado && usuarioEncontrado.length > 0) {
-            res.json({ 
-                mensaje: 'Login exitoso', 
-                usuario: usuarioEncontrado[0] 
+        if (usuarioEncontrado) {
+            return res.json({
+                mensaje: 'Login exitoso',
+                usuario: usuarioEncontrado
             });
-        } else {
-            res.status(401).json({ error: 'Correo o contraseña incorrectos' });
         }
+
+        return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
     } catch (error: any) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 }
 
 export const usuario_register = async (req: Request, res: Response) => {
     const nombre = String(req.body?.nombre ?? '').trim();
     const correo = String(req.body?.correo ?? '').trim();
-    const pasword = String(req.body?.pasword ?? '').trim();
+    const pasword = String(req.body?.pasword ?? req.body?.password ?? '').trim();
     const telefono = Number(req.body?.telefono ?? 0);
 
     if (!nombre || !correo || !pasword || !telefono) {
@@ -70,13 +70,13 @@ export const usuario_register = async (req: Request, res: Response) => {
 
 export const usuarios_update= async(req:Request, res:Response)=>{
     console.log("backend recibiendo", req.body)
-    const {id_usuario,nombre,correo,pasword,telefono}=req.body;
-    let passwordfinal=pasword;
+    const {id_usuario,nombre,correo,pasword,password,telefono}=req.body;
+    let passwordfinal = String(pasword ?? password ?? '').trim();
 
-    if(!passwordfinal||passwordfinal.trim()===''){
+    if(!passwordfinal){
         const [userRows]:any= await pool.query('SELECT pasword FROM usuario WHERE id_usuario = ?', [id_usuario]);
         if (userRows && userRows.length > 0) {
-            passwordfinal = userRows[0].pasword;
+            passwordfinal = String(userRows[0].pasword ?? '').trim();
         }
     }
     try {
