@@ -34,9 +34,20 @@ export class Perfil implements OnInit {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       const localData = localStorage.getItem('usuario');
+      
       if (localData) {
-        const usuarioParsed = JSON.parse(localData);
-        this.datosUsuario = { ...this.datosUsuario, ...usuarioParsed };
+        try {
+          const usuarioParsed = JSON.parse(localData);
+          // Fusionamos los datos del localStorage con los valores por defecto
+          this.datosUsuario = { ...this.datosUsuario, ...usuarioParsed };
+        } catch (error) {
+          console.error('Error al parsear los datos del usuario:', error);
+          this.router.navigate(['/login']);
+        }
+      } else {
+        // Si alguien intenta entrar a /perfil sin iniciar sesión, lo mandamos al login
+        console.warn('No se encontró una sesión activa. Redirigiendo...');
+        this.router.navigate(['/login']);
       }
     }
   }
