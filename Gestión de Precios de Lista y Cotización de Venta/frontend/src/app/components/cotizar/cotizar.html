@@ -4,7 +4,7 @@
       <div class="brand-mark">N</div>
       <div class="brand-copy">
         <strong>Nexaro</strong>
-        <span>Catálogo &amp; cotizador</span>
+        <span>Catálogo &amp; Cotizador</span>
       </div>
     </div>
 
@@ -16,70 +16,62 @@
     </nav>
 
     <div class="header-actions">
-      <button class="ghost-btn">Perfil</button>
+      <button class="ghost-btn" (click)="irPerfil()">Perfil</button>
       <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
+
   <main class="quote-layout">
     <section class="quote-header">
       <div>
-        <p class="eyebrow">Cotización</p>
-        <h1>Crear propuesta rápida</h1>
+        <p class="eyebrow">Área de Compras / Solicitud</p>
+        <h1>Arma tu cotización a medida</h1>
       </div>
 
       <div class="header-actions">
-        <button class="ghost-btn">Guardar borrador</button>
-        <button class="primary-btn">Enviar cotización</button>
+        <button class="primary-btn" (click)="enviarCotizacion()">Enviar solicitud de cotización</button>
       </div>
     </section>
 
+    <!-- Contenedor principal: Catálogo para elegir a la izquierda, Resumen/Carrito a la derecha -->
     <section class="quote-content">
+      
+      <!-- Columna Izquierda: Selección de Servicios Disponibles para el Comprador -->
       <div class="quote-form-card">
         <div class="card-header">
-          <h2>Detalles del proyecto</h2>
-          <span>Cliente / solución</span>
+          <h2>Selecciona tus servicios</h2>
+          <span>Haz clic en agregar</span>
         </div>
 
-        <form class="quote-form">
-          <div class="field-group">
-            <label>Cliente</label>
-            <input type="text" placeholder="Nombre del cliente" />
+        <div class="services-selection-grid">
+          <div *ngFor="let prod of productosDisponibles" class="selectable-product-card">
+            <div class="prod-info">
+              <span class="badge-cat">{{ prod.categoria }}</span>
+              <strong>{{ prod.nombre }}</strong>
+              <p>{{ prod.desc }}</p>
+              <span class="price-tag">${{ prod.precio | number:'1.0-2' }}</span>
+            </div>
+            <button class="primary-btn small-btn" (click)="agregarAlCarrito(prod)">+ Agregar</button>
           </div>
+        </div>
 
+        <!-- Condiciones de la solicitud -->
+        <div class="conditions-section">
+          <h3>Condiciones del requerimiento</h3>
           <div class="field-row">
             <div class="field-group">
-              <label>Tipo de solución</label>
-              <select>
-                <option>elegir</option>
-                <option>Internet + seguridad</option>
-                <option>Telefonía IP</option>
-                <option>CCTV / vigilancia</option>
-                <option>Control de acceso</option>
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label>Plazo</label>
-              <select>
-                <option>elegir</option>
+              <label>Plazo estimado</label>
+              <select [(ngModel)]="plazoSeleccionado" name="plazo">
                 <option>15 días</option>
                 <option>30 días</option>
                 <option>45 días</option>
                 <option>60 días</option>
               </select>
             </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field-group">
-              <label>Cantidad</label>
-              <input type="number" value="0" />
-            </div>
 
             <div class="field-group">
               <label>Moneda</label>
-              <select>
-                <option>elegir</option>
+              <select [(ngModel)]="monedaSeleccionada" name="moneda">
                 <option>MXN</option>
                 <option>QTZL</option>
                 <option>USD</option>
@@ -87,79 +79,46 @@
             </div>
           </div>
 
-          <div class="field-group">
-            <label >Notas adicionales</label>
-            <textarea placeholder="Agregar notas adicionales..."></textarea>
+          <div class="field-group" style="margin-top: 14px;">
+            <label>Notas o requerimientos especiales</label>
+            <textarea [(ngModel)]="notasAdicionales" name="notas" placeholder="Escribe detalles adicionales para tu cotización..."></textarea>
           </div>
-        </form>
+        </div>
       </div>
 
+      <!-- Columna Derecha: Resumen / Carrito del Comprador -->
       <aside class="summary-card">
         <div class="card-header">
-          <h2>Resumen</h2>
-          <span>Servicio</span>
+          <h2>Tu Cotización</h2>
+          <span>{{ itemsCotizacion.length }} ítems</span>
         </div>
 
         <div class="service-list">
-          <article class="quote-item">
-            <div>
-              <strong>Fibra 200 Mbps</strong>
-              <small>Internet</small>
-            </div>
-            <span>$1,250</span>
-          </article>
+          <div *ngIf="itemsCotizacion.length === 0" class="empty-cart">
+            <p>No has seleccionado ningún servicio todavía.</p>
+          </div>
 
-          <article class="quote-item">
+          <article *ngFor="let item of itemsCotizacion; let i = index" class="quote-item">
             <div>
-              <strong>Switch gestionado</strong>
-              <small>Red</small>
+              <strong>{{ item.producto.nombre }}</strong>
+              <small>Cant: {{ item.cantidad }} x ${{ item.producto.precio }}</small>
             </div>
-            <span>$1,980</span>
-          </article>
-
-          <article class="quote-item">
-            <div>
-              <strong>Cámara 4K</strong>
-              <small>CCTV</small>
+            <div class="item-actions-right">
+              <span>${{ item.producto.precio * item.cantidad | number:'1.0-2' }}</span>
+              <button class="btn-remove" (click)="removerItem(i)" title="Eliminar">×</button>
             </div>
-            <span>$2,140</span>
           </article>
         </div>
 
         <div class="totals">
-          <div><span>Subtotal</span><strong>$5,370.00</strong></div>
-          <div><span>IVA</span><strong>$987.00</strong></div>
-          <div class="grand-total"><span>Total</span><strong>$6,357.00</strong></div>
+          <div><span>Subtotal</span><strong>${{ subtotal | number:'1.0-2' }}</strong></div>
+          <div><span>IVA (16%)</span><strong>${{ iva | number:'1.0-2' }}</strong></div>
+          <div class="grand-total"><span>Total estimado</span><strong>${{ total | number:'1.0-2' }} {{ monedaSeleccionada }}</strong></div>
         </div>
 
-        <button class="primary-btn wide">Agregar servicio</button>
+        <button class="primary-btn wide" (click)="enviarCotizacion()">Enviar solicitud</button>
       </aside>
-    </section>
 
-    <section class="catalog-preview">
-      <article class="product-card blue">
-        <span>Internet</span>
-        <strong>Fibra premium</strong>
-        <small>Desde $1,250 MXN</small>
-      </article>
-
-      <article class="product-card green">
-        <span>Telefonía</span>
-        <strong>PABX cloud</strong>
-        <small>Desde $980 MXN</small>
-      </article>
-
-      <article class="product-card orange">
-        <span>CCTV</span>
-        <strong>Videovigilancia</strong>
-        <small>Desde $2,140 MXN</small>
-      </article>
-
-      <article class="product-card purple">
-        <span>Control</span>
-        <strong>Acceso inteligente</strong>
-        <small>Desde $1,690 MXN</small>
-      </article>
     </section>
   </main>
 </div>
