@@ -6,7 +6,8 @@ create table usuario(
     nombre varchar(50),
     correo varchar(50) unique not null,
     pasword varchar(50),
-    telefono int
+    telefono varchar(20),
+    fecha_creacion date
 );
 
 create table proveedores(
@@ -261,7 +262,7 @@ create procedure sp_productos_update(
 		update productos
         set
 			id_marca=p_id_marca,
-            id_categoria=p_id_marca,
+            id_categoria=p_id_categoria,
             stock=p_stock,
             modelo=p_modelo,
             descripcion=p_descripcion,
@@ -336,7 +337,7 @@ delimiter ;
 delimiter $$
 	create procedure sp_usuarios_create(u_nombre varchar(50),u_correo varchar(50),u_pasword varchar(50), u_telefono int)
     begin
-		insert into usuario(nombre,correo,pasword,telefono) values (u_nombre,u_correo,u_pasword,u_telefono);
+		insert into usuario(nombre,correo,pasword,telefono,fecha_creacion) values (u_nombre,u_correo,u_pasword,u_telefono,curdate());
     end $$
 delimiter ;
 
@@ -366,7 +367,7 @@ CREATE PROCEDURE sp_usuarios_update(
     IN u_nombre VARCHAR(50), 
     IN u_correo VARCHAR(50), 
     IN u_pasword VARCHAR(50),
-    IN u_telefono INT
+    IN u_telefono varchar(20)
 )
 BEGIN
     UPDATE usuario
@@ -490,13 +491,16 @@ CALL sp_reglas_margen_create(4, 4, '18%', CURDATE());
 CALL sp_reglas_margen_create(1, 3, '27%', CURDATE());
 CALL sp_reglas_margen_create(2, 4, '29%', CURDATE());
 
-CALL sp_usuarios_create('', 'carlos@empresa.com', '123456');
-CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123');
-CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123');
-CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456');
-CALL sp_usuarios_create('José Torres', 'jose@empresa.com', 'jose2024');
-CALL sp_usuarios_create('Sofía Castro', 'sofia@empresa.com', 'sofia789');
-CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321');
-CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123');
-CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456');
-CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987');
+CALL sp_usuarios_create('', 'carlos@empresa.com', '123456',curdate());
+CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123',curdate());
+CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123',curdate());
+CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456',curdate());
+CALL sp_usuarios_create('José Torres', 'jose@empresa.com', 'jose2024',curdate());
+CALL sp_usuarios_create('Sofía Castro', 'sofia@empresa.com', 'sofia789',curdate());
+CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321',curdate());
+CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123',curdate());
+CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456',curdate());
+CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987',curdate());
+
+
+ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
