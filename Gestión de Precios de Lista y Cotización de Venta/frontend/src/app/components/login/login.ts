@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -11,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './login.css',
   templateUrl: './login.html',
 })
-
 export class Login {
   correo: string = '';
   pasword: string = '';
@@ -24,17 +22,28 @@ export class Login {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   }
 
-  constructor(private auth: AuthService, private router: Router, private http: HttpClient) {};
+  constructor(private auth: AuthService, private router: Router) {}
 
   onLogin() {
+    this.errorMessage = '';
     const credenciales = { correo: this.correo, pasword: this.pasword };
 
     this.auth.login(credenciales).subscribe({
       next: (res: any) => {
-        console.log('Login Exisoto:', res);
-        if (res && res.usuario) {
-          localStorage.setItem('usuario', JSON.stringify(res.usuario));
+        console.log('Login Exitoso:', res);
+
+        // Si res.usuario es un array (ej: [ {id_usuario: 2, ...} ]), extraemos el índice [0]. 
+        // Si es un objeto directo, lo usamos tal cual.
+        let datosAguardar = res.usuario || res;
+        
+        if (Array.isArray(datosAguardar)) {
+          datosAguardar = datosAguardar[0];
         }
+
+        if (datosAguardar) {
+          localStorage.setItem('usuario', JSON.stringify(datosAguardar));
+        }
+
         this.router.navigate(['/principal']);
       },
       error: (err) => {
@@ -46,76 +55,58 @@ export class Login {
 
   onRegister(event?: Event) {
     event?.preventDefault();
+    this.errorMessage = '';
     this.isRegisterOpen = true;
   }
 
-  onRegisterSubmit(){
-    if(!this.nombre || !this.correo || !this.pasword || !this.telefono){
+  onRegisterSubmit() {
+    this.errorMessage = '';
+
+    if (!this.nombre || !this.correo || !this.pasword || !this.telefono) {
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
-    }else if(!this.isValidEmail(this.correo)){
+    } 
+    if (!this.isValidEmail(this.correo)) {
       this.errorMessage = 'Por favor, ingrese un correo válido';
       return;
-    }else if(this.pasword.length < 6){
+    } 
+    if (this.pasword.length < 6) {
       this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
       return;
-    }else if(this.telefono.toString().length < 8 || this.telefono.toString().length > 8){
-      this.errorMessage = 'este numero de telefono no es valido, intente de nuevo';
+    } 
+    if (this.telefono.toString().length < 8 || this.telefono.toString().length > 8) {
+      this.errorMessage = 'Este número de teléfono no es válido, intente de nuevo';
       return;
-    }else{
-      console.log('Registro Exitoso:', { nombre: this.nombre, correo: this.correo, pasword: this.pasword, telefono: this.telefono });
-      this.submitRegister();
     }
+
+    this.submitRegister();
   }
 
   closeRegister() {
     this.isRegisterOpen = false;
+    this.errorMessage = '';
   }
 
   submitRegister() {
-    const credenciales = { nombre: this.nombre, correo: this.correo, pasword: this.pasword, telefono: this.telefono };
+    const credenciales = { 
+      nombre: this.nombre, 
+      correo: this.correo, 
+      pasword: this.pasword, 
+      telefono: this.telefono 
+    };
+
     this.auth.register(credenciales).subscribe({
       next: (res: any) => {
         console.log('Registro Exitoso:', res);
-        alert('Usuario registrado correctamente');
+        alert('¡Usuario registrado correctamente! Ya puedes iniciar sesión.');
+        this.isRegisterOpen = false;
+        this.errorMessage = '';
+        this.pasword = '';
       },
       error: (err) => {
         console.error(err);
         this.errorMessage = err.error?.error || err.error?.mensaje || 'Ocurrió un error al registrar el usuario';
       }
-    });
-  }
-  
-  correoValidator(){
-    if (!this.nombre || !this.correo || !this.pasword) {
-      alert('Por favor, complete todos los campos');
-      return;
-    }
-
-    if (!this.isValidEmail(this.correo)) {
-      alert('Por favor, ingrese un correo válido');
-      return;
-    }
-
-    const datosUsuario = {
-      nombre: this.nombre,
-      contrasena: this.pasword,
-      correo: this.correo
-    };
-    this.http.post('http://localhost:3000/api/usuarios/registrar', datosUsuario).subscribe({
-      next: (res: any) => {
-        alert('¡Registro exitoso!');
-        this.isRegisterOpen = false;
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        if (err.error && err.error.mensaje) {
-         alert(err.error.mensaje);
-        } else {
-          alert('Ocurrió un error al intentar registrar el usuario.');
-        }
-      }
-    
     });
   }
 }
