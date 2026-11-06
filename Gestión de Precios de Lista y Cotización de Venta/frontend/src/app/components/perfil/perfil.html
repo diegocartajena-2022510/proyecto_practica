@@ -43,8 +43,9 @@
           <button class="icon-close" type="button" aria-label="Cerrar" (click)="cerrarModalEditar()">×</button>
         </div>
 
-        <form class="profile-form" (ngSubmit)="guardarPerfil()">
+        <form class="profile-form" (ngSubmit)="guardarCambios()">
           <div class="form-grid">
+
             <label class="field">
               <span>Nombre completo</span>
               <input type="text" [(ngModel)]="perfilEditado.nombre" name="nombre" placeholder="Tu nombre" />
@@ -53,6 +54,11 @@
             <label class="field">
               <span>Correo electrónico</span>
               <input type="email" [(ngModel)]="perfilEditado.correo" name="correo" placeholder="correo@ejemplo.com" />
+            </label>
+
+            <label class="field">
+              <span>contraseña</span>
+              <input type="password" [(ngModel)]="perfilEditado.pasword" name="password" placeholder="******" />
             </label>
 
             <label class="field">
@@ -68,7 +74,7 @@
 
           <div class="modal-actions">
             <button class="secondary-btn" type="button" (click)="cerrarModalEditar()">Cancelar</button>
-            <button class="primary-btn" type="submit" (click)="guardarCambios()">Guardar cambios</button>
+            <button class="primary-btn" type="submit">Guardar cambios</button>
           </div>
         </form>
       </div>

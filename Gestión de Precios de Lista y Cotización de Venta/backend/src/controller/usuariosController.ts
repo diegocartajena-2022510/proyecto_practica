@@ -11,7 +11,7 @@ export const usuarios_login = async (req: Request, res: Response) => {
         
         const usuarioEncontrado = rows[0];
 
-        if (usuarioEncontrado && usuarioEncontrado.length > 0) {
+        if (!usuarioEncontrado && usuarioEncontrado.length > 0) {
             res.json({ 
                 mensaje: 'Login exitoso', 
                 usuario: usuarioEncontrado[0] 
@@ -69,11 +69,21 @@ export const usuario_register = async (req: Request, res: Response) => {
 }
 
 export const usuarios_update= async(req:Request, res:Response)=>{
+    console.log("backend recibiendo", req.body)
     const {id_usuario,nombre,correo,pasword,telefono}=req.body;
+    let passwordfinal=pasword;
+
+    if(!passwordfinal||passwordfinal.trim()===''){
+        const [userRows]:any= await pool.query('SELECT pasword FROM usuario WHERE id_usuario = ?', [id_usuario]);
+        if (userRows && userRows.length > 0) {
+            passwordfinal = userRows[0].pasword;
+        }
+    }
     try {
-        await pool.query('CALL sp_usuarios_update(?,?,?,?,?)',[id_usuario,nombre,correo,pasword,telefono]);
+        await pool.query('CALL sp_usuarios_update(?,?,?,?,?)',[id_usuario,nombre,correo,passwordfinal,telefono]);
         res.json({mensaje:'Usuario actualizado correctamente'});
     } catch (error:any) {
+        console.error("error", error)
         res.status(500).json({error:error.message});
     }
 }
