@@ -5,6 +5,9 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #0f172a;
 }
+.logout-btn:hover{
+  background:rgb(197, 22, 22)
+}
 
 * {
   box-sizing: border-box;
