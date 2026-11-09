@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 import { productosService } from '../../service/productosService';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -11,6 +13,7 @@ import { productosService } from '../../service/productosService';
   styleUrl: './catalogo.css',
   templateUrl: './catalogo.html',
 })
+
 export class Catalogo {
   listaProductos: any[] = [];
   productosFiltrados: any[] = [];
@@ -22,11 +25,12 @@ export class Catalogo {
   totalRevision: number = 0;
   totalSinStock: number = 0;
 
-  // NUEVO: Carrito / Ítems agregados a la cotización por el comprador
   itemsCotizacion: { producto: any; cantidad: number }[] = [];
   monedaSeleccionada: string = 'MXN';
   notasAdicionales: string = '';
   datosUsuario: any = { nombre: '', correo: '' };
+  
+  fechaActual: Date = new Date();
 
   constructor(
     private auth: AuthService, 
@@ -85,24 +89,36 @@ export class Catalogo {
     this.productoSeleccionado = null;
   }
 
-  // NUEVO: Funciones del carrito de cotización
   agregarAlCarrito(producto: any, event?: Event) {
-    event?.stopPropagation(); // Evita que se abra el modal al dar clic en el botón de agregar
-    const itemExistente = this.itemsCotizacion.find(item => item.producto.id_producto === producto.id_producto || item.producto.modelo === producto.modelo);
-    if (itemExistente) {
-      itemExistente.cantidad++;
+    event?.stopPropagation();
+    const index = this.itemsCotizacion.findIndex(item => 
+      (item.producto.id_producto && item.producto.id_producto === producto.id_producto) ||
+      (item.producto.id && item.producto.id === producto.id) ||
+      (item.producto.modelo === producto.modelo)
+    );
+
+    if (index !== -1) {
+      this.itemsCotizacion[index] = {
+        ...this.itemsCotizacion[index],
+        cantidad: this.itemsCotizacion[index].cantidad + 1
+      };
     } else {
       this.itemsCotizacion.push({ producto, cantidad: 1 });
     }
+
+    this.itemsCotizacion = [...this.itemsCotizacion];
+    this.cdr.detectChanges();
   }
 
   removerItem(index: number) {
     this.itemsCotizacion.splice(index, 1);
+    this.itemsCotizacion = [...this.itemsCotizacion];
+    this.cdr.detectChanges();
   }
 
   get subtotal(): number {
     return this.itemsCotizacion.reduce((acc, item) => {
-      const precio = item.producto.precio_lista ?? item.producto.precio ?? 0;
+      const precio = item.producto.precio_pvp ?? item.producto.precio ?? 0;
       return acc + (precio * item.cantidad);
     }, 0);
   }
@@ -115,29 +131,7 @@ export class Catalogo {
     return this.subtotal + this.iva;
   }
 
-  enviarCotizacion() {
-    if (this.itemsCotizacion.length === 0) {
-      alert('Tu lista de cotización está vacía. Selecciona al menos un servicio.');
-      return;
-    }
-
-    const propuestaFinal = {
-      cliente: this.datosUsuario.nombre,
-      correo: this.datosUsuario.correo,
-      moneda: this.monedaSeleccionada,
-      notas: this.notasAdicionales,
-      items: this.itemsCotizacion,
-      total: this.total,
-      fecha: new Date()
-    };
-
-    console.log('Enviando propuesta de cotización:', propuestaFinal);
-    alert('¡Solicitud de cotización enviada con éxito!');
-    this.itemsCotizacion = [];
-  }
-
   comprarPorProducto(producto: any) {
-    // Si prefiere agregarlo directamente al carrito desde el modal
     this.agregarAlCarrito(producto);
     this.cerrarModal();
   } 
@@ -166,4 +160,44 @@ export class Catalogo {
     });
     this.cdr.detectChanges();
   }
+
+  enviarCotizacionPDF() {
+    if (this.itemsCotizacion.length === 0) {
+      alert('Tu lista de cotización está vacía. Selecciona al menos un producto.');
+      return;
+    }
+
+    const elemento = document.getElementById('plantilla-pdf');
+    if (!elemento) {
+      console.error('No se encontró la plantilla del PDF en el HTML');
+      return;
+    }
+
+    html2canvas(elemento, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF('p', 'mm', 'letter');
+      const imgWidth = 210;
+      const pageHeight = 295;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`Cotizacion_Nexaro_${new Date().getTime()}.pdf`);
+
+      this.itemsCotizacion = [];
+      this.cdr.detectChanges();
+    });
+  }
+
 }
