@@ -11,7 +11,6 @@
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item active">Catálogo</button>
-      <button class="nav-item" (click)="onCotizar()">Cotizar</button>
       <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
     </nav>
     <div class="header-actions">
@@ -32,10 +31,9 @@
       </div>
     </section>
 
-    <!-- Estructura de 3 Columnas: [Categorías y Resumen] | [Productos de BD] | [Tu Cotización (Derecha)] -->
+
     <section class="catalog-layout-cart">
       
-      <!-- 1. BARRA LATERAL IZQUIERDA: Categorías y Resumen -->
       <aside class="sidebar">
         <div class="side-card">
           <h3>Categorías</h3>
@@ -48,7 +46,7 @@
         </div>
 
         <div class="side-cardsummary-card">
-          <h3>Resumen BD</h3>
+          <h3>Resumen</h3>
           <ul>
             <li><span>Activos</span><strong>{{ totalActivos }}</strong></li>
             <li><span>En revisión</span><strong>{{ totalRevision }}</strong></li>
@@ -57,7 +55,6 @@
         </div>
       </aside>
 
-      <!-- 2. CENTRO: Listado de Productos de la Base de Datos -->
       <div class="product-grid" aria-label="Espacios para productos">
         <article class="product-slot" *ngFor="let prod of productosFiltrados" (click)="seleccionarProducto(prod)">
           <div class="slot-image" aria-hidden="true"></div>
@@ -67,8 +64,8 @@
             <p>{{ prod.descripcion }}</p>
             <div class="slot-meta">
               <div>
-                <span>Precio</span>
-                <strong>{{ prod.moneda || '$' }} {{ (prod.precio_lista ?? prod.precio ?? 0) | number:'1.2-2' }}</strong>
+                <span>Precio PVP</span>
+                <strong>Q {{ (prod.precio_pvp ?? prod.precio ?? 0) | number:'1.2-2' }}</strong>
               </div>
               <button class="primary-btn small-btn" (click)="agregarAlCarrito(prod, $event)">+ Agregar</button>
             </div>
@@ -76,7 +73,6 @@
         </article>
       </div>
 
-      <!-- 3. DERECHA: La barra de cotización flotante (Sticky) que querías -->
       <aside class="summary-card-right">
         <div class="card-header">
           <h2>Tu Cotización</h2>
@@ -90,39 +86,29 @@
 
           <article *ngFor="let item of itemsCotizacion; let i = index" class="quote-item">
             <div>
-              <strong>{{ item.producto.modelo }}</strong>
-              <small>Cant: {{ item.cantidad }} x ${{ item.producto.precio_lista ?? item.producto.precio }}</small>
+              <strong>{{ item.producto.modelo || item.producto.nombre }}</strong>
+              <small>Cant: {{ item.cantidad }} x Q{{ (item.producto.precio_lista ?? item.producto.precio ?? 0) | number:'1.2-2' }}</small>
             </div>
             <div class="item-actions-right">
-              <span>${{ (item.producto.precio_lista ?? item.producto.precio ?? 0) * item.cantidad | number:'1.2-2' }}</span>
+              <span>Q{{ ((item.producto.precio_pvp ?? item.producto.precio ?? 0) * item.cantidad) | number:'1.2-2' }}</span>
               <button class="btn-remove" (click)="removerItem(i)" title="Eliminar">×</button>
             </div>
           </article>
         </div>
 
-        <div class="field-group-cart" style="margin-bottom: 14px;">
-          <label style="font-size: 0.75rem; font-weight: 700; color: #334155; text-transform: uppercase;">Moneda</label>
-          <select [(ngModel)]="monedaSeleccionada" name="moneda" style="width: 100%; border: 1px solid #dbe4f0; border-radius: 10px; padding: 8px; background: #f8fafc; margin-top: 4px;">
-            <option>MXN</option>
-            <option>QTZL</option>
-            <option>USD</option>
-          </select>
-        </div>
-
         <div class="totals">
-          <div><span>Subtotal</span><strong>${{ subtotal | number:'1.2-2' }}</strong></div>
-          <div><span>IVA (16%)</span><strong>${{ iva | number:'1.2-2' }}</strong></div>
-          <div class="grand-total"><span>Total estimado</span><strong>${{ total | number:'1.2-2' }} {{ monedaSeleccionada }}</strong></div>
+          <div><span>Subtotal</span><strong>Q{{ subtotal | number:'1.2-2' }}</strong></div>
+          <div><span>IVA (16%)</span><strong>Q{{ iva | number:'1.2-2' }}</strong></div>
+          <div class="grand-total"><span>Total estimado</span><strong>Q{{ total | number:'1.2-2' }}</strong></div>
         </div>
 
-        <button class="primary-btn wide" (click)="enviarCotizacion()">Enviar solicitud</button>
+        <button class="primary-btn wide" (click)="enviarCotizacionPDF()">Enviar solicitud</button>
       </aside>
 
     </section>
   </main>
 </div>
 
-<!-- Modal de detalle de producto -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="cerrarModal()">
   <div class="modal-content" *ngIf="productoSeleccionado" (click)="$event.stopPropagation()">
 
@@ -141,8 +127,7 @@
         <div class="modal-price-row">
           <span>Precio de lista</span>
           <strong>
-            {{ productoSeleccionado.moneda || '$' }}
-            {{ (productoSeleccionado.precio_lista ?? productoSeleccionado.precio ?? 0) | number:'1.2-2' }}
+            Q {{ (productoSeleccionado.precio_lista ?? productoSeleccionado.precio ?? 0) | number:'1.2-2' }}
           </strong>
         </div>
       </div>
@@ -152,5 +137,74 @@
       <button class="ghost-btn" type="button" (click)="cerrarModal()">Cerrar</button>
       <button class="primary-btn" type="button" data-id="comprar-cotizar-btn" (click)="comprarPorProducto(productoSeleccionado)">Agregar a la cotización</button>
     </div>
+  </div>
+</div>
+
+<div id="plantilla-pdf" class="pdf-container-styled">
+  <div class="pdf-top-banner">
+    <div class="pdf-brand-block">
+      <div class="pdf-brand-mark">N</div>
+      <div class="pdf-brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; Cotización</span>
+      </div>
+    </div>
+    <div class="pdf-header-meta">
+      <span class="pdf-badge">Área de Compras / Solicitud</span>
+      <h1>Propuesta de Cotización</h1>
+    </div>
+  </div>
+
+  <div class="pdf-info-grid">
+    <div class="pdf-info-card">
+      <span class="pdf-label">Cliente Solicitante</span>
+      <strong>{{ datosUsuario.nombre || 'Cliente General' }}</strong>
+      <p>{{ datosUsuario.correo || 'Sin correo registrado' }}</p>
+    </div>
+    <div class="pdf-info-card right">
+      <span class="pdf-label">Detalles de Emisión</span>
+      <p><strong>Fecha:</strong> {{ fechaActual | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Moneda:</strong> Quetzales (Q)</p>
+    </div>
+  </div>
+
+  <div class="pdf-section-title">
+    <h2>Productos Seleccionados</h2>
+  </div>
+
+  <table class="pdf-styled-table">
+    <thead>
+      <tr>
+        <th>Categoría</th>
+        <th>Modelo / Descripción</th>
+        <th class="text-center">Cant.</th>
+        <th>Precio Unitario</th>
+        <th class="text-right">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of itemsCotizacion">
+        <td><span class="pdf-cat-badge">{{ item.producto.categoria_nombre }}</span></td>
+        <td>
+          <strong>{{ item.producto.modelo || item.producto.nombre }}</strong>
+          <small>{{ item.producto.descripcion }}</small>
+        </td>
+        <td class="text-center"><strong>{{ item.cantidad }}</strong></td>
+        <td>Q{{ (item.producto.precio_lista ?? item.producto.precio ?? 0) | number:'1.2-2' }}</td>
+        <td class="text-right"><strong>Q{{ ((item.producto.precio_lista ?? item.producto.precio ?? 0) * item.cantidad) | number:'1.2-2' }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pdf-bottom-summary">
+    <div class="pdf-totals-card">
+      <div class="pdf-total-row"><span>Subtotal</span><strong>Q{{ subtotal | number:'1.2-2' }}</strong></div>
+      <div class="pdf-total-row"><span>IVA (16%)</span><strong>Q{{ iva | number:'1.2-2' }}</strong></div>
+      <div class="pdf-total-row pdf-grand"><span>Total Estimado</span><strong>Q{{ total | number:'1.2-2' }}</strong></div>
+    </div>
+  </div>
+
+  <div class="pdf-footer-note">
+    <p>Nexaro Telecomunicaciones &amp; Seguridad — Documento generado automáticamente para fines de cotización.</p>
   </div>
 </div>
