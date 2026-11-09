@@ -18,7 +18,6 @@
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item active" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
-      <button class="nav-item" (click)="onCotizar()">Cotizar</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
     </nav>
 
@@ -39,8 +38,7 @@
         </p>
 
         <div class="welcome-actions">
-          <button class="primary-btn">Nueva cotización</button>
-          <button class="secondary-btn">Ver catálogo</button>
+          <button class="secondary-btn" (click)="onCatalogo()">Ver catálogo</button>
         </div>
       </div>
 
