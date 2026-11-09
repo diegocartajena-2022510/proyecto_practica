@@ -44,7 +44,7 @@ create table reglas_margen(
 	id_margen int primary key auto_increment,
     id_categoria int,
     id_marca int,
-    porcentaje_margen varchar(10),
+    porcentaje_margen varchar(50),
     fecha_actualizacion date,
     constraint id_categoria_fk foreign key (id_categoria) references categoria(id_categoria) on delete cascade,
     constraint id_marca_fk foreign key (id_marca) references marcas(id_marca) on delete cascade
@@ -501,6 +501,6 @@ CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321',curdate()
 CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123',curdate());
 CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456',curdate());
 CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987',curdate());
-
+reglas_margen
 
 ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
