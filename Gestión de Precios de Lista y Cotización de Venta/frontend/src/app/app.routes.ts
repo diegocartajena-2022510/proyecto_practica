@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { Catalogo } from './components/catalogo/catalogo';
-import { Cotizar } from './components/cotizar/cotizar';
 import { Login } from './components/login/login';
 import { Perfil } from './components/perfil/perfil';
 import { Principal } from './components/principal/principal';
@@ -12,7 +11,6 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'principal', component: Principal },
   { path: 'catalogo', component: Catalogo },
-  { path: 'cotizar', component: Cotizar },
   { path: 'perfil', component: Perfil },
   { path: 'sobre-nosotros', component: SobreNosotros }
 ];
