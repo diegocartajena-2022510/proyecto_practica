@@ -115,6 +115,9 @@ button {
   font-weight: 700;
   transition: 0.2s ease;
 }
+.logout-btn:hover{
+  background:rgb(197, 22, 22)
+}
 
 .ghost-btn {
   background: #eff6ff;
