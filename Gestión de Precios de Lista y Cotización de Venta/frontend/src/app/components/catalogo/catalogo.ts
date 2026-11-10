@@ -118,7 +118,7 @@ export class Catalogo {
 
   get subtotal(): number {
     return this.itemsCotizacion.reduce((acc, item) => {
-      const precio = item.producto.precio_pvp ?? item.producto.precio ?? 0;
+      const precio = item.producto.precio_pvp ?? item.producto.precio_lista ?? item.producto.precio ?? 0;
       return acc + (precio * item.cantidad);
     }, 0);
   }
@@ -199,5 +199,4 @@ export class Catalogo {
       this.cdr.detectChanges();
     });
   }
-
 }
