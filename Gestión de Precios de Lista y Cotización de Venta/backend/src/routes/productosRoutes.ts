@@ -12,12 +12,22 @@ router.get("/productos", async (req, res) => {
         COALESCE(r.porcentaje_margen, '0') as porcentaje_margen
       FROM productos p
       LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-      LEFT JOIN reglas_margen r ON (p.id_categoria = r.id_categoria OR p.id_marca = r.id_marca)
+      LEFT JOIN reglas_margen r ON p.id_categoria = r.id_categoria
     `;
     
     const [rows]: any = await pool.query(query);
 
-    const productosConPVP = rows.map((prod: any) => {
+    const unicosMap = new Map();
+    rows.forEach((prod: any) => {
+      const idProd = prod.id_productos ?? prod.id_producto;
+      if (!unicosMap.has(idProd)) {
+        unicosMap.set(idProd, prod);
+      }
+    });
+
+    const productosLimpios = Array.from(unicosMap.values());
+
+    const productosConPVP = productosLimpios.map((prod: any) => {
       const precioLista = parseFloat(prod.precio_lista ?? prod.precio ?? 0);
       const margen = parseFloat(prod.porcentaje_margen) || 0; 
 
