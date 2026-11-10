@@ -7,25 +7,22 @@ create table usuario(
     correo varchar(50) unique not null,
     pasword varchar(50),
     telefono varchar(20),
+    rol varchar(20) not null default 'usuario',
     fecha_creacion date
 );
-
 create table proveedores(
 	id_proveedores int primary key auto_increment not null,
     nombre_proveedores varchar(50) not null,
     contacto_proveedores varchar(10) not null
 );
-
 create table categoria(
 	id_categoria int primary key auto_increment not null,
     nombre varchar(50) not null
 );
-
 create table marcas(
 	id_marca int primary key auto_increment not null,
     nombre varchar(50) not null
 );
-
 create table productos(
 	id_productos int primary key auto_increment not null,
     id_marca int not null,
@@ -39,7 +36,6 @@ create table productos(
     constraint fk_id_marca foreign key (id_marca) references marcas(id_marca) on delete cascade,
     constraint fk_id_categoria foreign key (id_categoria) references categoria(id_categoria) on delete cascade
 );
-
 create table reglas_margen(
 	id_margen int primary key auto_increment,
     id_categoria int,
@@ -115,7 +111,7 @@ delimiter $$
     end $$
 delimiter ;
 
--- editar categoria 
+-- editar categoria --
 delimiter $$
 	create procedure sp_categoria_update(c_id_categoria int, c_nombre varchar(50))
     begin
@@ -126,7 +122,7 @@ delimiter $$
     end $$
 delimiter ;
 
--- eliminar categoria 
+-- eliminar categoria --
 delimiter $$
 	create procedure sp_categoria_delete(c_id_categoria int)
     begin
@@ -144,7 +140,7 @@ delimiter $$
 	end $$
 delimiter ;
 
--- agregar marcas
+-- agregar marcas --
 delimiter $$
 	create procedure sp_marcas_create(m_nombre varchar(50))
 		begin
@@ -152,7 +148,7 @@ delimiter $$
 		end $$
 delimiter ;
 
--- editar marcas 
+-- editar marcas --
 delimiter $$
 create procedure sp_marcas_update(m_id_marca int, m_nombre varchar(50))
     begin
@@ -163,7 +159,7 @@ create procedure sp_marcas_update(m_id_marca int, m_nombre varchar(50))
     end $$
 delimiter ;
 
--- eliminar marcas
+-- eliminar marcas --
 delimiter $$
 create procedure sp_marcas_delete(m_id_marca int)
 	begin
@@ -181,7 +177,7 @@ create procedure sp_productos_read()
 	end $$
 delimiter ;
 
--- buscar productos por modelo, descripcion, marca o categoria
+-- buscar productos por modelo, descripcion, marca o categoria --
 delimiter $$
 create procedure sp_productos_buscar(in p_busqueda varchar(100))
 begin
@@ -227,7 +223,7 @@ begin
 end $$
 delimiter ;
 
--- agregar productos
+-- agregar productos --
 
 delimiter $$
 create procedure sp_productos_create(
@@ -283,7 +279,7 @@ delimiter ;
 
 -- PROCEDIMIENTOS ALMACENADOS DE REGLAS MARGEN--
 
--- listar reglas margen
+-- listar reglas margen --
 delimiter $$
 	create procedure sp_reglas_margen_read()
     begin
@@ -291,7 +287,7 @@ delimiter $$
     end $$
 delimiter ;
 
--- agregar reglas margen
+-- agregar reglas margen --
 delimiter $$
 	create procedure sp_reglas_margen_create( r_id_categoria int,
                                                 r_id_marca int,
@@ -304,7 +300,7 @@ delimiter $$
     end $$
 delimiter ;
 
--- actualizar reglas margen
+-- actualizar reglas margen --
 delimiter $$
 	create procedure sp_reglas_margen_update( r_id_margen int,
 												r_id_categoria int,
@@ -323,7 +319,7 @@ delimiter $$
     end $$
 delimiter ;
 
--- eliminar reglas margen
+-- eliminar reglas margen --
 delimiter $$
 	create procedure sp_reglas_margen_delete(r_id_margen int)
     begin
@@ -333,11 +329,17 @@ delimiter ;
 
 -- USUARIOS --
 
-
 delimiter $$
-	create procedure sp_usuarios_create(u_nombre varchar(50),u_correo varchar(50),u_pasword varchar(50), u_telefono int)
+	create procedure sp_usuarios_create(
+        u_nombre varchar(50),
+        u_correo varchar(50),
+        u_pasword varchar(50),
+        u_telefono varchar(20),
+        u_rol varchar(20)
+    )
     begin
-		insert into usuario(nombre,correo,pasword,telefono,fecha_creacion) values (u_nombre,u_correo,u_pasword,u_telefono,curdate());
+		insert into usuario(nombre,correo,pasword,telefono,rol,fecha_creacion)
+        values (u_nombre,u_correo,u_pasword,u_telefono,u_rol,curdate());
     end $$
 delimiter ;
 
@@ -348,10 +350,10 @@ CREATE PROCEDURE sp_usuarios_login(
     IN u_pasword VARCHAR(50)
 )
 BEGIN
-    SELECT id_usuario, nombre, correo, telefono,fecha_creacion
+    SELECT id_usuario, nombre, correo, telefono, rol, fecha_creacion
     FROM usuario 
     WHERE correo = u_correo AND pasword = u_pasword;
-END $$sp_usuarios_login
+END $$
 DELIMITER ;
 
 delimiter $$
@@ -367,14 +369,16 @@ CREATE PROCEDURE sp_usuarios_update(
     IN u_nombre VARCHAR(50), 
     IN u_correo VARCHAR(50), 
     IN u_pasword VARCHAR(50),
-    IN u_telefono varchar(20)
+    IN u_telefono varchar(20),
+    IN u_rol varchar(20)
 )
 BEGIN
     UPDATE usuario
     SET nombre = u_nombre,
         correo = u_correo,
         pasword = u_pasword,
-        telefono = u_telefono
+        telefono = u_telefono,
+        rol = u_rol
     WHERE id_usuario = u_id_usuario;
 END $$
 DELIMITER ;
@@ -491,16 +495,15 @@ CALL sp_reglas_margen_create(4, 4, '18%', CURDATE());
 CALL sp_reglas_margen_create(1, 3, '27%', CURDATE());
 CALL sp_reglas_margen_create(2, 4, '29%', CURDATE());
 
-CALL sp_usuarios_create('', 'carlos@empresa.com', '123456',curdate());
-CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123',curdate());
-CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123',curdate());
-CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456',curdate());
-CALL sp_usuarios_create('José Torres', 'jose@empresa.com', 'jose2024',curdate());
-CALL sp_usuarios_create('Sofía Castro', 'sofia@empresa.com', 'sofia789',curdate());
-CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321',curdate());
-CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123',curdate());
-CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456',curdate());
-CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987',curdate());
-reglas_margen
+CALL sp_usuarios_create('jsue', 'josue@gmail.com', '123456', '55500001', 'admin');
+CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123', '55500002', 'usuario');
+CALL sp_usuarios_create('Luis Gómez', 'luis@empresa.com', 'pass123', '55500003', 'usuario');
+CALL sp_usuarios_create('María Ruiz', 'maria@empresa.com', 'segura456', '55500004', 'usuario');
+CALL sp_usuarios_create('José Torres', 'jose@empresa.com', 'jose2024', '55500005', 'usuario');
+CALL sp_usuarios_create('Sofía Castro', 'sofia@empresa.com', 'sofia789', '55500006', 'usuario');
+CALL sp_usuarios_create('Pedro Díaz', 'pedro@empresa.com', 'pedro321', '55500007', 'usuario');
+CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123', '55500008', 'usuario');
+CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456', '55500009', 'usuario');
+CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987', '55500010', 'usuario');
 
 ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
