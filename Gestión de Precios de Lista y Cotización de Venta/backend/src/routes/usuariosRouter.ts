@@ -41,11 +41,12 @@ router.post('/usuarios/registrar', async (req, res) => {
       });
     }
 
-    await db.query('CALL sp_usuarios_create(?, ?, ?, ?)', [
+    await db.query('CALL sp_usuarios_create(?, ?, ?, ?, ?)', [
       nombre,
       correo,
       pasword,
-      telefono
+      telefono,
+      'usuario'
     ]);
 
     return res.status(201).json({ mensaje: 'Usuario registrado con éxito' });
