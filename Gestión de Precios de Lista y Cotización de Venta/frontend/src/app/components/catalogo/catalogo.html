@@ -12,7 +12,12 @@
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item active">Catálogo</button>
       <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
+
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+         Proveedores & Márgenes
+      </button>
     </nav>
+
     <div class="header-actions">
       <button class="ghost-btn" (click)="onPerfil()">Perfil</button>
       <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
@@ -30,7 +35,6 @@
         <input type="text" class="search-box" placeholder="Buscar producto..." (input)="onBuscarpoducto($event)" />
       </div>
     </section>
-
 
     <section class="catalog-layout-cart">
       
@@ -87,7 +91,7 @@
           <article *ngFor="let item of itemsCotizacion; let i = index" class="quote-item">
             <div>
               <strong>{{ item.producto.modelo || item.producto.nombre }}</strong>
-              <small>Cant: {{ item.cantidad }} x Q{{ (item.producto.precio_lista ?? item.producto.precio ?? 0) | number:'1.2-2' }}</small>
+              <small>Cant: {{ item.cantidad }} x Q{{ (item.producto.precio_pvp ?? item.producto.precio ?? 0) | number:'1.2-2' }}</small>
             </div>
             <div class="item-actions-right">
               <span>Q{{ ((item.producto.precio_pvp ?? item.producto.precio ?? 0) * item.cantidad) | number:'1.2-2' }}</span>
@@ -190,8 +194,8 @@
           <small>{{ item.producto.descripcion }}</small>
         </td>
         <td class="text-center"><strong>{{ item.cantidad }}</strong></td>
-        <td>Q{{ (item.producto.precio_lista ?? item.producto.precio ?? 0) | number:'1.2-2' }}</td>
-        <td class="text-right"><strong>Q{{ ((item.producto.precio_lista ?? item.producto.precio ?? 0) * item.cantidad) | number:'1.2-2' }}</strong></td>
+        <td>Q{{ (item.producto.precio_pvp ?? item.producto.precio ?? 0) | number:'1.2-2' }}</td>
+        <td class="text-right"><strong>Q{{ ((item.producto.precio_pvp ?? item.producto.precio ?? 0) * item.cantidad) | number:'1.2-2' }}</strong></td>
       </tr>
     </tbody>
   </table>
