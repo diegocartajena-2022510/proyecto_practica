@@ -54,7 +54,7 @@ export const usuario_register = async (req: Request, res: Response) => {
             });
         }
 
-        await pool.query('CALL sp_usuarios_create(?, ?, ?, ?)', [nombre, correo, pasword, telefono]);
+        await pool.query('CALL sp_usuarios_create(?, ?, ?, ?, ?)', [nombre, correo, pasword, telefono, 'usuario']);
         return res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
     } catch (error: any) {
         if (error?.errno === 1062 || error?.code === 'ER_DUP_ENTRY') {
@@ -73,14 +73,25 @@ export const usuarios_update= async(req:Request, res:Response)=>{
     const {id_usuario,nombre,correo,pasword,password,telefono}=req.body;
     let passwordfinal = String(pasword ?? password ?? '').trim();
 
-    if(!passwordfinal){
-        const [userRows]:any= await pool.query('SELECT pasword FROM usuario WHERE id_usuario = ?', [id_usuario]);
-        if (userRows && userRows.length > 0) {
-            passwordfinal = String(userRows[0].pasword ?? '').trim();
-        }
-    }
     try {
-        await pool.query('CALL sp_usuarios_update(?,?,?,?,?)',[id_usuario,nombre,correo,passwordfinal,telefono]);
+        const [userRows]: any = await pool.query(
+            'SELECT pasword, rol FROM usuario WHERE id_usuario = ?',
+            [id_usuario]
+        );
+        const usuarioActual = Array.isArray(userRows) ? userRows[0] : null;
+        if (!passwordfinal && usuarioActual) {
+            passwordfinal = String(usuarioActual.pasword ?? '').trim();
+        }
+
+        const rolActual = String(usuarioActual?.rol ?? 'usuario');
+        await pool.query('CALL sp_usuarios_update(?,?,?,?,?,?)', [
+            id_usuario,
+            nombre,
+            correo,
+            passwordfinal,
+            telefono,
+            rolActual
+        ]);
         res.json({mensaje:'Usuario actualizado correctamente'});
     } catch (error:any) {
         console.error("error", error)
