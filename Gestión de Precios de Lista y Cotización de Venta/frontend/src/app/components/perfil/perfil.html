@@ -7,15 +7,23 @@
         <span>Catálogo &amp; Cotizador</span>
       </div>
     </div>
+    
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+
+      <!-- Opción exclusiva para el rol Admin en la navegación -->
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+        Proveedores &amp; Márgenes
+      </button>
     </nav>
+
     <div class="header-actions">
       <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
+
   <main class="content-panel profile-content">
     <section class="profile-hero">
       <div class="profile-summary">
@@ -55,7 +63,7 @@
             </label>
 
             <label class="field">
-              <span>contraseña</span>
+              <span>Contraseña</span>
               <input type="password" [(ngModel)]="perfilEditado.pasword" name="password" placeholder="******" />
             </label>
 
@@ -91,7 +99,7 @@
             <strong>{{ datosUsuario.nombre }}</strong>
           </div>
           <div class="info-item">
-            <span>fecha de creacion</span>
+            <span>Fecha de creación</span>
             <strong>{{ datosUsuario.fecha_creacion | date:'dd/MM/yyyy' }}</strong>
           </div>
           <div class="info-item">

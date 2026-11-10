@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nexaro - Panel Principal</title>
 </head>
 <body>
-    <div class="dashboard-shell">
+<div class="dashboard-shell">
   <header class="top-header">
     <div class="brand-block">
       <div class="brand-mark">N</div>
@@ -19,6 +19,11 @@
       <button class="nav-item active" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+      
+      <!-- Opción exclusiva para Administradores en la barra de navegación -->
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+        Proveedores & Márgenes
+      </button>
     </nav>
 
     <div class="header-actions">
@@ -39,6 +44,11 @@
 
         <div class="welcome-actions">
           <button class="secondary-btn" (click)="onCatalogo()">Ver catálogo</button>
+          
+          <!-- Botón extra de administrador en el banner de bienvenida -->
+          <button *ngIf="datosUsuario?.rol === 'admin'" class="primary-btn" (click)="onConfigurarPrecios()">
+            Configurar Motor de Márgenes
+          </button>
         </div>
       </div>
 
@@ -108,14 +118,20 @@
         </div>
 
         <div class="action-list">
-          <button>Configurar precios</button>
-          <button>Crear propuesta</button>
-          <button>Revisar clientes</button>
+          <!-- Opciones comunes -->
+          <button (click)="onCatalogo()">Ver catálogo y cotizar</button>
+          <button (click)="onPerfil()">Editar perfil</button>
+
+          <button *ngIf="datosUsuario?.rol === 'admin'" class="admin-action-btn" (click)="onConfigurarPrecios()">
+             Configurar Reglas de Márgenes
+          </button>
+          <button *ngIf="datosUsuario?.rol === 'admin'" class="admin-action-btn" (click)="onGestionProveedores()">
+             Gestionar Proveedores
+          </button>
         </div>
       </div>
     </section>
   </main>
 </div>
-    
 </body>
 </html>

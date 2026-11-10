@@ -12,10 +12,15 @@
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item active" (click)="OnSobreNosotros()">Sobre nosotros</button>
+
+      <!-- Opción exclusiva para el rol Admin en la barra de navegación -->
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+        Proveedores &amp; Márgenes
+      </button>
     </nav>
 
     <div class="header-actions">
-      <button class="ghost-btn">Perfil</button>
+      <button class="ghost-btn" (click)="onPerfil()">Perfil</button>
       <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
@@ -163,4 +168,3 @@
     </section>
   </main>
 </div>
-
