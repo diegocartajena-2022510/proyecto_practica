@@ -41,6 +41,3 @@ export const productos_delete=async(req:Request,res:Response)=>{
         res.status(500).json({error: error.message});
     }
 }
-
-
-
