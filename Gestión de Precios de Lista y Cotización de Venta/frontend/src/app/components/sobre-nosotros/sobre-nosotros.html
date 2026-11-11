@@ -13,8 +13,7 @@
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item active" (click)="OnSobreNosotros()">Sobre nosotros</button>
 
-      <!-- Opción exclusiva para el rol Admin en la barra de navegación -->
-      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
         Proveedores &amp; Márgenes
       </button>
     </nav>
