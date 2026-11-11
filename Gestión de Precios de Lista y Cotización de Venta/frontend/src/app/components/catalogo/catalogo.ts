@@ -142,6 +142,7 @@ export class Catalogo {
   cerrarSesion() { this.router.navigate(['/login']); }
   onCotizar() { this.router.navigate(['/cotizar']); }
   onSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
+  onProveedores(){this.router.navigate(['/proveedores']);}
 
   onBuscarpoducto(event: any) {
     const texto = event.target.value.trim().toLowerCase();
@@ -198,5 +199,12 @@ export class Catalogo {
       this.itemsCotizacion = [];
       this.cdr.detectChanges();
     });
+  }
+  onGestionProveedores() {
+    alert('Módulo de Proveedores (Próximamente)');
+  }
+
+  onConfigurarPrecios() {
+    alert('Motor de Reglas de Márgenes activo.');
   }
 }
