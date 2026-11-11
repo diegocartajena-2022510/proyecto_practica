@@ -4,6 +4,7 @@ import { Login } from './components/login/login';
 import { Perfil } from './components/perfil/perfil';
 import { Principal } from './components/principal/principal';
 import { SobreNosotros } from './components/sobre-nosotros/sobre-nosotros';
+import { Proveedores } from './components/admin/proveedores/proveedores';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'principal', component: Principal },
   { path: 'catalogo', component: Catalogo },
   { path: 'perfil', component: Perfil },
-  { path: 'sobre-nosotros', component: SobreNosotros }
+  { path: 'sobre-nosotros', component: SobreNosotros },
+  {path: 'proveedores', component:Proveedores}
 ];
