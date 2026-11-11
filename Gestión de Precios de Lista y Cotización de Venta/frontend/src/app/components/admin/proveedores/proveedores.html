@@ -1,0 +1,95 @@
+<div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; Cotizador</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
+      <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+      
+      <!-- Opción activa para el administrador -->
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item active admin-badge">
+        Proveedores &amp; Márgenes
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn" (click)="onPerfil()">Perfil</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="catalog-panel">
+    <section class="catalog-toolbar">
+      <div class="section-copy">
+        <p class="eyebrow">Administración</p>
+        <h2>Gestión de Proveedores y Reglas de Márgenes</h2>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="primary-btn" (click)="abrirModalNuevoProveedor()">+ Nuevo Proveedor</button>
+      </div>
+    </section>
+
+    <!-- Contenedor principal con las dos tablas -->
+    <div class="catalog-layout-cart">
+
+      <!-- Tabla 1: Proveedores -->
+      <aside class="summary-card-right">
+        <div class="card-header">
+          <h2>Proveedores</h2>
+          <span>{{ listarProveedores.length }} activos</span>
+        </div>
+
+        <div class="service-list">
+          <div *ngIf="listarProveedores.length === 0" class="empty-cart">
+            <p>No hay proveedores registrados.</p>
+          </div>
+
+          <article *ngFor="let prov of listarProveedores" class="quote-item">
+            <div>
+              <strong>{{ prov.nombre_proveedores }}</strong>
+              <small>Contacto: {{ prov.contacto_proveedores || 'Sin contacto' }}</small>
+            </div>
+            <div class="item-actions-right">
+              <button class="ghost-btn small-btn" (click)="editarProveedor(prov)">Editar</button>
+              <button class="btn-remove" (click)="eliminarProveedor(prov)" title="Eliminar">×</button>
+            </div>
+          </article>
+        </div>
+      </aside>
+
+      <!-- Tabla 2: Reglas de Márgenes (Usa listarMargen según tu TS) -->
+      <aside class="summary-card-right">
+        <div class="card-header">
+          <h2>Reglas de Márgenes</h2>
+          <span>{{ listarMargen.length }} configuradas</span>
+        </div>
+
+        <div class="service-list">
+          <div *ngIf="listarMargen.length === 0" class="empty-cart">
+            <p>No hay reglas de margen definidas.</p>
+          </div>
+
+          <article *ngFor="let regla of listarMargen" class="quote-item">
+            <div>
+              <strong>Categoría: {{ regla.categoria_nombre }}</strong>
+              <small>Marca: {{ regla.marca_nombre || 'General' }}</small>
+            </div>
+            <div class="item-actions-right">
+              <strong class="margin-tag">Margen: {{ regla.porcentaje_margen }}%</strong>
+              <button class="ghost-btn small-btn" (click)="editarRegla(regla)">Editar</button>
+            </div>
+          </article>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+</div>
