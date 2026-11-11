@@ -56,6 +56,9 @@ export class Principal {
 
     alert('Módulo de Proveedores (Próximamente)');
   }
+  onProveedores(){
+    this.router.navigate(['/proveedores'])
+  }
 
   onConfigurarPrecios(){
     alert('Motor de Reglas de Márgenes activo.');
