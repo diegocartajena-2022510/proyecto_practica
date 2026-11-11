@@ -13,7 +13,7 @@
       <button class="nav-item active">Catálogo</button>
       <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
 
-      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onGestionProveedores()">
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
          Proveedores & Márgenes
       </button>
     </nav>
