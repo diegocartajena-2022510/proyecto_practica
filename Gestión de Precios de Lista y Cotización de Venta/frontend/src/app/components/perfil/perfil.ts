@@ -10,6 +10,7 @@ import { UsuarioService } from '../../service/usuarioService';
   styleUrl: './perfil.css',
   templateUrl: './perfil.html',
 })
+
 export class Perfil implements OnInit {
   datosUsuario: any = {
     nombre: '',
@@ -19,7 +20,8 @@ export class Perfil implements OnInit {
     cargo: 'Administrador de Ventas',
     cotizaciones: 24,
     ventas: 12,
-    tasa: '85%'
+    tasa: '85%',
+    rol: ''
   };
 
   mostrarModal = false;
@@ -38,14 +40,12 @@ export class Perfil implements OnInit {
       if (localData) {
         try {
           const usuarioParsed = JSON.parse(localData);
-          // Fusionamos los datos del localStorage con los valores por defecto
           this.datosUsuario = { ...this.datosUsuario, ...usuarioParsed };
         } catch (error) {
           console.error('Error al parsear los datos del usuario:', error);
           this.router.navigate(['/login']);
         }
       } else {
-        // Si alguien intenta entrar a /perfil sin iniciar sesión, lo mandamos al login
         console.warn('No se encontró una sesión activa. Redirigiendo...');
         this.router.navigate(['/login']);
       }
@@ -79,6 +79,9 @@ export class Perfil implements OnInit {
   regresarMenu() {
     this.router.navigate(['/principal']);
   }
+  onProveedores(){
+    this.router.navigate(['/proveedores']);
+  }
 
   cerrarSesion() {
     if (isPlatformBrowser(this.platformId)) {
@@ -111,5 +114,12 @@ export class Perfil implements OnInit {
         alert('Hubo un error al actualizar el perfil.');
       }
     });
+  }
+  onGestionProveedores() {
+    alert('Módulo de Proveedores (Próximamente)');
+  }
+
+  onConfigurarPrecios() {
+    alert('Motor de Reglas de Márgenes activo.');
   }
 }
