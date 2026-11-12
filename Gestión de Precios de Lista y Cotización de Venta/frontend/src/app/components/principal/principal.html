@@ -20,7 +20,6 @@
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
       
-      <!-- Opción exclusiva para Administradores en la barra de navegación -->
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
         Proveedores & Márgenes
       </button>
@@ -45,7 +44,6 @@
         <div class="welcome-actions">
           <button class="secondary-btn" (click)="onCatalogo()">Ver catálogo</button>
           
-          <!-- Botón extra de administrador en el banner de bienvenida -->
           <button *ngIf="datosUsuario?.rol === 'admin'" class="primary-btn" (click)="onConfigurarPrecios()">
             Configurar Motor de Márgenes
           </button>
