@@ -137,7 +137,13 @@ export class Catalogo {
   } 
 
   onPerfil() { this.router.navigate(['/perfil']); }
-  onCatalogo() { this.router.navigate(['/catalogo']); }
+  onCatalogo() { 
+    if (this.datosUsuario?.rol === 'admin') {
+      this.router.navigate(['/catalogo-admin']);
+    } else {
+      this.router.navigate(['/catalogo']);
+    }
+  }
   regresarMenu() { this.router.navigate(['/principal']); }
   cerrarSesion() { this.router.navigate(['/login']); }
   onCotizar() { this.router.navigate(['/cotizar']); }
