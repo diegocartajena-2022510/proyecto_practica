@@ -1,7 +1,19 @@
 import { Router } from "express";
 import pool from "../config/db";
+import { productos_create, productos_delete, productos_update } from "../controller/productosController";
 
 const router = Router();
+
+// --- Endpoint para obtener las categorías (Nuevo) ---
+router.get("/categorias", async (req, res) => {
+  try {
+    const [rows]: any = await pool.query("SELECT * FROM categoria");
+    return res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error al obtener las categorías:", error);
+    return res.status(500).json({ mensaje: "Error al obtener las categorías" });
+  }
+});
 
 router.get("/productos", async (req, res) => {
   try {
@@ -48,5 +60,9 @@ router.get("/productos", async (req, res) => {
     return res.status(500).json({ mensaje: "Error al obtener los productos" });
   }
 });
+
+router.post("/productos", productos_create);
+router.put("/productos/:id", productos_update);
+router.delete("/productos/:id", productos_delete);
 
 export default router;
