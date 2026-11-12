@@ -73,7 +73,11 @@ export class Perfil implements OnInit {
   }
 
   onCatalogo() {
-    this.router.navigate(['/catalogo']);
+    if (this.datosUsuario?.rol === 'admin') {
+      this.router.navigate(['/catalogo-admin']);
+    } else {
+      this.router.navigate(['/catalogo']); // La vista para clientes normales
+    }
   }
 
   regresarMenu() {
