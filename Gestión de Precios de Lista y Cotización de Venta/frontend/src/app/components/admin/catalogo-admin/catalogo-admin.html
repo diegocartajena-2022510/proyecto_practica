@@ -1,0 +1,120 @@
+<div class="dashboard-shell">
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-mark">N</div>
+      <div class="brand-copy">
+        <strong>Nexaro</strong>
+        <span>Catálogo &amp; Cotizador</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button class="nav-item active">Catálogo</button>
+      <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item" routerLink="/proveedores" (click)="onProveedores()">
+        Proveedores &amp; Márgenes
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="ghost-btn" (click)="onPerfil()">Perfil</button>
+      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="catalog-panel">
+    <section class="catalog-toolbar">
+      <div class="section-copy">
+        <p class="eyebrow">Administración</p>
+        <h2>Gestión de Productos del Catálogo</h2>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="primary-btn" (click)="abrirModalNuevo()">+ Nuevo Producto</button>
+      </div>
+    </section>
+
+    <section class="summary-card-right" style="margin-top: 24px; padding: 28px; border-radius: 22px; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.07);" aria-labelledby="productos-registrados">
+      <div class="card-header" style="align-items: flex-end; margin-bottom: 22px; padding-bottom: 18px;">
+        <div>
+          <p style="margin: 0 0 6px; color: #64748b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">Inventario del catálogo</p>
+          <h2 id="productos-registrados" style="font-size: 1.4rem; letter-spacing: -0.02em;">Productos Registrados</h2>
+          <p style="margin: 6px 0 0; color: #64748b; font-size: 0.88rem;">Consulta precios y existencias de tus productos.</p>
+        </div>
+        <span style="padding: 7px 12px; color: #1d4ed8; background: #eff6ff; border: 1px solid #dbeafe; font-size: 0.82rem;">{{ listarProductos.length }} activos</span>
+      </div>
+
+      <div class="service-list" style="max-height: 500px; gap: 14px; padding: 2px;">
+        <div *ngIf="listarProductos.length === 0" class="empty-cart" style="padding: 42px 20px; border: 1px dashed #cbd5e1; border-radius: 16px; background: #f8fafc;">
+          <p style="margin: 0; color: #475569; font-weight: 600;">No hay productos en el catálogo.</p>
+          <small style="display: block; margin-top: 6px; color: #94a3b8;">Los productos que agregues aparecerán aquí.</small>
+        </div>
+
+        <article *ngFor="let prod of listarProductos" class="quote-item" style="gap: 20px; padding: 18px 20px; border: 1px solid #e2e8f0; border-radius: 16px; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+          <div style="flex: 1; min-width: 0; gap: 5px;">
+            <strong style="font-size: 1rem; color: #0f172a;">{{ prod.modelo }}</strong>
+            <small style="line-height: 1.5;">{{ prod.descripcion || 'Sin descripción' }}</small>
+            <span style="width: fit-content; margin-top: 5px; padding: 5px 10px; border: 1px solid #dbeafe; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 0.8rem; font-weight: 700;">
+              Precio <strong style="color: inherit; font-size: inherit;">${{ prod.precio_pvp||prod.precio_lista}}</strong>
+            </span>
+          </div>
+          <aside class="item-actions-right" aria-label="Acciones del producto" style="flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 9px;">
+            <span class="stock-badge" style="padding: 7px 10px; border-radius: 999px;">Stock: {{ prod.stock }}</span>
+            <button class="ghost-btn small-btn" style="border: 1px solid #dbeafe;" (click)="abrirModalEditar(prod)">Editar</button>
+            <button class="btn-remove" style="width: 34px; height: 34px; border-radius: 9px;" (click)="eliminarProducto(prod)" title="Eliminar" aria-label="Eliminar producto">×</button>
+          </aside>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2>{{ modoEdicion ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
+        <button class="btn-remove" (click)="cerrarModal()">×</button>
+      </div>
+
+      <form (ngSubmit)="guardarProducto()" class="modal-form">
+        <div class="form-group">
+          <label>Nombre del Producto</label>
+          <input type="text" [(ngModel)]="productoActual.modelo" name="modelo" required class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="productoActual.descripcion" name="descripcion" class="form-input" rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select [(ngModel)]="productoActual.id_categoria" name="id_categoria" required class="form-input">
+            <option [value]="null" disabled selected>Seleccione una categoría</option>
+            <option *ngFor="let cat of listarCategorias" [value]="cat.id_categoria">
+              {{ cat.nombre }}
+            </option>
+          </select>
+      </div>
+
+        
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio (Q)</label>
+            <input type="number" [(ngModel)]="productoActual.precio_lista" name="precio" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Stock</label>
+            <input type="number" [(ngModel)]="productoActual.stock" name="stock" required class="form-input">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="primary-btn">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
