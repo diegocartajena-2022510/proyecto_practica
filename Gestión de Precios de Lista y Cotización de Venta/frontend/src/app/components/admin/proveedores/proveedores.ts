@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProveedoresService } from '../../../service/proveedoresService';
@@ -19,27 +19,25 @@ export class Proveedores implements OnInit {
   constructor(
     private router: Router, 
     private pro: ProveedoresService, 
-    @Inject(PLATFORM_ID) private plataformId: Object,
-    private cdr:ChangeDetectorRef
+    private cdr: ChangeDetectorRef, // 1. Inyectamos ChangeDetectorRef aquí
+    @Inject(PLATFORM_ID) private plataformId: Object
   ) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.plataformId)) {
       const localData = localStorage.getItem('usuario');
-      this.cdr.detectChanges()
       if (localData) {
         this.datosUsuario = JSON.parse(localData);
-        this.cdr.detectChanges()
       }
     }
     this.cargarDatos();
-    this.cdr.detectChanges()
   }
 
   cargarDatos() {
     this.pro.listarProveedores().subscribe({
       next: (data) => {
-        this.listarProveedores = data;
+        this.listarProveedores = data || [];
+        this.cdr.detectChanges(); // 2. Forzamos a Angular a pintar los proveedores de inmediato
       },
       error: (err) => {
         console.error('Error al cargar proveedores:', err);
@@ -48,10 +46,11 @@ export class Proveedores implements OnInit {
 
     this.pro.listarReglasMargen().subscribe({
       next: (data) => {
-        this.listarMargen = data;
+        this.listarMargen = data || [];
+        this.cdr.detectChanges(); // 3. Forzamos a Angular a pintar las reglas de margen de inmediato
       },
       error: (err) => {
-        console.error('Error al cargar reglas de margen:', err);
+        console.error('Error al cargar lista de margen:', err);
       }
     });
   }
@@ -61,7 +60,11 @@ export class Proveedores implements OnInit {
   }
 
   onCatalogo() {
-    this.router.navigate(['/catalogo']);
+    if (this.datosUsuario?.rol === 'admin') {
+      this.router.navigate(['/catalogo-admin']);
+    } else {
+      this.router.navigate(['/catalogo']); // La vista para clientes normales
+    }
   }
 
   OnSobreNosotros() {
@@ -85,25 +88,26 @@ export class Proveedores implements OnInit {
   }
 
   eliminarProveedor(prov: any) {
-  console.log("Objeto proveedor recibido:", prov);
-  
-  const id = prov.id_proveedores || prov.id_proveedor || prov.id;
+    const id = prov.id_proveedores || prov.id_proveedor || prov.id;
 
-  if (!id) {
-    console.error("El ID del proveedor es inválido o undefined");
-    return;
-  }
+    if (!id) {
+      console.error("El ID del proveedor es inválido o undefined");
+      return;
+    }
 
-  if (confirm(`¿Estás seguro de eliminar al proveedor "${prov.nombre_proveedores || ''}"?`)) {
-    this.pro.eliminarProveedor(id).subscribe({
-      next: () => {
-        this.cargarDatos();
-        this.cdr.detectChanges()
-      },
-      error: (err) => console.error('Error al eliminar:', err)
-    });
+    if (confirm(`¿Estás seguro de eliminar al proveedor "${prov.nombre_proveedores || ''}"?`)) {
+      this.pro.eliminarProveedor(id).subscribe({
+        next: () => {
+          this.listarProveedores = this.listarProveedores.filter(
+            p => (p.id_proveedores || p.id_proveedor || p.id) !== id
+          );
+          
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Error al eliminar:', err)
+      });
+    }
   }
-}
 
   editarRegla(regla: any) {
     alert(`Editar regla de margen ID: ${regla.id_regla}`);
