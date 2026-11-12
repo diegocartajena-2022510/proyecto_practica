@@ -25,8 +25,8 @@ create table marcas(
 );
 create table productos(
 	id_productos int primary key auto_increment not null,
-    id_marca int not null,
-    id_categoria int not null,
+    id_marca int,
+    id_categoria int,
     stock int not null,
     modelo varchar(50),
     descripcion varchar(255),
