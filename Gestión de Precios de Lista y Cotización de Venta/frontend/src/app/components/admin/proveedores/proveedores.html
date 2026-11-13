@@ -1,4 +1,5 @@
 <div class="dashboard-shell">
+  
   <header class="top-header">
     <div class="brand-block">
       <div class="brand-mark">N</div>
@@ -12,8 +13,6 @@
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
-      
-      <!-- Opción activa para el administrador -->
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item active admin-badge">
         Proveedores &amp; Márgenes
       </button>
@@ -26,21 +25,19 @@
   </header>
 
   <main class="catalog-panel">
+    
     <section class="catalog-toolbar">
       <div class="section-copy">
         <p class="eyebrow">Administración</p>
         <h2>Gestión de Proveedores y Reglas de Márgenes</h2>
       </div>
-
       <div class="toolbar-actions">
         <button class="primary-btn" (click)="abrirModalNuevoProveedor()">+ Nuevo Proveedor</button>
       </div>
     </section>
 
-    <!-- Contenedor principal con las dos tablas -->
     <div class="catalog-layout-cart">
 
-      <!-- Tabla 1: Proveedores -->
       <aside class="summary-card-right">
         <div class="card-header">
           <h2>Proveedores</h2>
@@ -65,7 +62,6 @@
         </div>
       </aside>
 
-      <!-- Tabla 2: Reglas de Márgenes (Usa listarMargen según tu TS) -->
       <aside class="summary-card-right">
         <div class="card-header">
           <h2>Reglas de Márgenes</h2>
@@ -79,17 +75,93 @@
 
           <article *ngFor="let regla of listarMargen" class="quote-item">
             <div>
-              <strong>Categoría: {{ regla.categoria_nombre }}</strong>
+              <strong>Categoría: {{ regla.categoria_nombre || 'Sin categoría' }}</strong>
               <small>Marca: {{ regla.marca_nombre || 'General' }}</small>
             </div>
             <div class="item-actions-right">
-              <strong class="margin-tag">Margen: {{ regla.porcentaje_margen }}%</strong>
+              <strong class="margin-tag">Margen: {{ regla.porcentaje_margen }}</strong>
               <button class="ghost-btn small-btn" (click)="editarRegla(regla)">Editar</button>
             </div>
           </article>
         </div>
       </aside>
-
     </div>
   </main>
+
+  <div class="modal-overlay" *ngIf="mostrarModalProveedor">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2>{{ modoEdicionProveedor ? 'Editar Proveedor' : 'Nuevo Proveedor'}}</h2>
+      </div>
+
+      <form (ngSubmit)="guardarProveedor()" class="modal-form">
+        <div class="form-group">
+          <label>Nombre del Proveedor</label>
+          <input 
+            type="text" 
+            [(ngModel)]="proveedorActual.nombre_proveedores" 
+            name="nombre_proveedores" 
+            required 
+            class="form-input"
+            placeholder="Ej. TechDistribuidora S.A.">
+        </div>
+
+        <div class="form-group">
+          <label>Contacto (Teléfono / Correo)</label>
+          <input 
+            type="text" 
+            [(ngModel)]="proveedorActual.contacto_proveedores" 
+            name="contacto_proveedores" 
+            class="form-input"
+            placeholder="Ej. contacto@empresa.com">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" (click)="cerrarModalProveedor()">Cancelar</button>
+          <button type="submit" class="primary-btn">
+            {{ modoEdicionProveedor ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarModalRegla">
+    <div class="modal-card">
+      <div class="card-header">
+        <h2>Configurar Margen</h2>
+      </div>
+
+      <form (ngSubmit)="guardarRegla()" class="modal-form">
+        <div class="form-group">
+          <label>Categoría</label>
+          <input 
+            type="text" 
+            [value]="reglaActual.categoria_nombre" 
+            disabled 
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Porcentaje de Margen (%)</label>
+          <input 
+            type="number" 
+            [(ngModel)]="reglaActual.porcentaje_margen" 
+            name="porcentaje_margen" 
+            min="0" 
+            max="100" 
+            step="0.01" 
+            required 
+            class="form-input">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" (click)="cerrarModalRegla()">Cancelar</button>
+          <button type="submit" class="primary-btn">Actualizar Margen</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
+
