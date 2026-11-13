@@ -4,7 +4,6 @@ import { productos_create, productos_delete, productos_update } from "../control
 
 const router = Router();
 
-// --- Endpoint para obtener las categorías (Nuevo) ---
 router.get("/categorias", async (req, res) => {
   try {
     const [rows]: any = await pool.query("SELECT * FROM categoria");
