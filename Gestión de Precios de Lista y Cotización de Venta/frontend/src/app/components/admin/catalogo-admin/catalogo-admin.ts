@@ -18,7 +18,6 @@ export class CatalogoAdmin implements OnInit {
 
   mostrarModal = false;
   modoEdicion = false;
-  // Sincronizado con los nombres exactos del formulario HTML: nombre y precio
   productoActual: any = { id_producto: null, nombre: '', descripcion: '', precio: 0, stock: 0, id_categoria:null};
 
   constructor(
@@ -49,7 +48,6 @@ export class CatalogoAdmin implements OnInit {
       error: (err) => console.log('Error al listar productos', err)
     });
   }
-
   cargarCategoria() {
     this.prodService.getCategorias().subscribe({
       next: (data) => {
@@ -73,7 +71,6 @@ export class CatalogoAdmin implements OnInit {
     };
     this.mostrarModal = true;
   }
-
   abrirModalEditar(prod: any) {
     this.modoEdicion = true;
     this.productoActual = { 
@@ -111,9 +108,8 @@ export class CatalogoAdmin implements OnInit {
   }
 
   eliminarProducto(prod: any) {
-    console.log("Objeto producto recibido para eliminar:", prod); // Para depurar en consola
+    console.log("Objeto producto recibido para eliminar:", prod);
     
-    // Buscamos con seguridad cualquier posible nombre de la propiedad del ID
     const id = prod.id_producto || prod.id_productos || prod.id || prod.id_item;
 
     if (!id) {
