@@ -26,4 +26,19 @@ router.get('/reglas_margen', async (req, res) => {
   }
 });
 
+router.put('/reglas_margen/:id', async (req, res) => {
+  const { id } = req.params;
+  const { id_categoria, porcentaje_margen } = req.body;
+
+  const query = 'UPDATE reglas_margen SET id_categoria = ?, porcentaje_margen = ? WHERE id_margen = ?';
+
+  try {
+    await db.query(query, [id_categoria, porcentaje_margen, id]);
+    res.json({ message: 'Regla de margen actualizada correctamente' });
+  } catch (err: any) {
+    console.error('Error al actualizar regla de margen:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
