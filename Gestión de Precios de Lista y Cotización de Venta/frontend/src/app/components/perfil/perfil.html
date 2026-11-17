@@ -13,7 +13,6 @@
       <button class="nav-item" (click)="onCatalogo()">Catálogo</button>
       <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
 
-      <!-- Opción exclusiva para el rol Admin en la navegación -->
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
         Proveedores &amp; Márgenes
       </button>
@@ -111,7 +110,7 @@
             <strong> +502 {{ datosUsuario.telefono }}</strong>
           </div>
           <div class="info-item">
-            <span>Usuario</span>
+            <span>tipo de Usuario</span>
             <strong>{{ datosUsuario.rol }}</strong>
           </div>
         </div>
