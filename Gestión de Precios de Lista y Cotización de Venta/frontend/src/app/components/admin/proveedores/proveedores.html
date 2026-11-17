@@ -79,7 +79,7 @@
               <small>Marca: {{ regla.marca_nombre || 'General' }}</small>
             </div>
             <div class="item-actions-right">
-              <strong class="margin-tag">Margen: {{ regla.porcentaje_margen }}</strong>
+              <strong class="margin-tag">Margen: {{ regla.porcentaje_margen }}%</strong>
               <button class="ghost-btn small-btn" (click)="editarRegla(regla)">Editar</button>
             </div>
           </article>
@@ -135,11 +135,15 @@
       <form (ngSubmit)="guardarRegla()" class="modal-form">
         <div class="form-group">
           <label>Categoría</label>
-          <input 
-            type="text" 
-            [value]="reglaActual.categoria_nombre" 
-            disabled 
+          <select 
+            [(ngModel)]="reglaActual.id_categoria" 
+            name="id_categoria" 
+            required 
             class="form-input">
+            <option *ngFor="let cat of listarCategorias" [value]="cat.id_categoria">
+              {{ cat.nombre }} 
+            </option>
+          </select>
         </div>
 
         <div class="form-group">
