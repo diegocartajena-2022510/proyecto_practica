@@ -16,6 +16,7 @@ export class Proveedores implements OnInit {
 
   listarProveedores: any[] = [];
   listarMargen: any[] = [];
+  listarCategorias: any[]=[];
 
   mostrarModalProveedor = false;
   modoEdicionProveedor = false;
@@ -25,8 +26,8 @@ export class Proveedores implements OnInit {
   reglaActual: any = { id_regla: null, id_categoria: null, categoria_nombre: '', porcentaje_margen: 0 };
 
   constructor(
-    private router: Router, 
-    private pro: ProveedoresService, 
+    private router: Router,
+    private pro: ProveedoresService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private plataformId: Object
   ) {}
@@ -57,6 +58,15 @@ export class Proveedores implements OnInit {
       },
       error: (err) => console.error('Error al cargar lista de margen:', err)
     });
+
+    this.pro.listarCategorias().subscribe({
+      next: (data) => {
+        this.listarCategorias = data || [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar categorías:', err)
+    });
+  
   }
 
   abrirModalNuevoProveedor() {
@@ -119,7 +129,7 @@ export class Proveedores implements OnInit {
   editarRegla(regla: any) {
     this.reglaActual = {
       ...regla,
-      categoria_nombre: regla.categoria_nombre || regla.nombre_categoria || regla.nombre || regla.categoria || 'Sin categoría'
+      id_regla: regla.id_regla || regla.id_margen || regla.id
     };
     this.mostrarModalRegla = true;
   }
@@ -130,7 +140,7 @@ export class Proveedores implements OnInit {
 
   guardarRegla() {
     const id = this.reglaActual.id_regla || this.reglaActual.id_margen;
-    
+
     this.pro.actualizarReglaMargen(id, this.reglaActual).subscribe({
       next: () => {
         this.cargarDatos();
