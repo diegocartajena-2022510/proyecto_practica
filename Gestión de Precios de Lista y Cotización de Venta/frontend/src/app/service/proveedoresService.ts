@@ -29,4 +29,12 @@ export class ProveedoresService {
   listarReglasMargen(): Observable<any> {
     return this.http.get(`${this.apiUrl}/reglas_margen`);
   }
+
+  actualizarReglaMargen(id: number, regla: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reglas_margen/${id}`, regla);
+  }
+
+  listarCategorias(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/categorias`);
+  }
 }
