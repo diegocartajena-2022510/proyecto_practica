@@ -46,6 +46,11 @@ create table reglas_margen(
     constraint id_marca_fk foreign key (id_marca) references marcas(id_marca) on delete cascade
 );
 
+create table if not exists tipo_cambio(
+	id_tipo_cambio int primary key not null,
+    tasa decimal(10,4) not null,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- PROCEDIMIENTOS ALMACENADOS DE PROVEEDORES --
 
 -- listar proveedores
@@ -394,6 +399,8 @@ SELECT
 FROM productos p
 JOIN categoria c ON p.id_categoria = c.id_categoria;
 
+
+
 -- REGISTROS DE PRUEBA USANDO PROCEDIMIENTOS ALMACENADOS --
 -- 10 registros por entidad
 
@@ -416,14 +423,9 @@ CALL sp_categoria_create('CCTV');
 CALL sp_categoria_create('control de acceso');
 
 CALL sp_marcas_create('Ubiquiti');
-CALL sp_marcas_create('Ubiquiti');
-CALL sp_marcas_create('Ubiquiti');
-CALL sp_marcas_create('hikvision');
 CALL sp_marcas_create('hikvision');
 CALL sp_marcas_create('hikvision');
 CALL sp_marcas_create('dahua');
-CALL sp_marcas_create('dahua');
-CALL sp_marcas_create('mikroTik');
 CALL sp_marcas_create('mikroTik');
 
 CALL sp_productos_create(1, 1, 25, 'UAC-AP-Pro', 'Access point profesional con doble banda 2.4/5 GHz, 802.11ac Wave 2, antenas internas y administración centralizada para redes empresariales.', 699.00, 'Q', 'Activo');
@@ -484,16 +486,16 @@ CALL sp_productos_create(3, 6, 19, 'AC-Controller-8', 'Controlador de acceso par
 CALL sp_productos_create(4, 6, 20, 'AC-Door-Exit', 'Equipo de salida para gestión de puertas y monitoreo de accesos autorizados.', 210.00, 'Q', 'Activo');
 CALL sp_productos_create(1, 6, 18, 'AC-Alarm-Reader', 'Dispositivo integrado con sensor de alarma y lector para reforzar la seguridad de accesos críticos.', 260.00, 'Q', 'Activo');
 
-CALL sp_reglas_margen_create(1, 1, '25%', CURDATE());
-CALL sp_reglas_margen_create(1, 2, '28%', CURDATE());
-CALL sp_reglas_margen_create(2, 2, '30%', CURDATE());
-CALL sp_reglas_margen_create(2, 3, '22%', CURDATE());
-CALL sp_reglas_margen_create(3, 3, '20%', CURDATE());
-CALL sp_reglas_margen_create(3, 4, '24%', CURDATE());
-CALL sp_reglas_margen_create(4, 1, '26%', CURDATE());
-CALL sp_reglas_margen_create(4, 4, '18%', CURDATE());
-CALL sp_reglas_margen_create(1, 3, '27%', CURDATE());
-CALL sp_reglas_margen_create(2, 4, '29%', CURDATE());
+CALL sp_reglas_margen_create(1, 1, '25', CURDATE());
+CALL sp_reglas_margen_create(1, 2, '28', CURDATE());
+CALL sp_reglas_margen_create(2, 2, '30', CURDATE());
+CALL sp_reglas_margen_create(2, 3, '22', CURDATE());
+CALL sp_reglas_margen_create(3, 3, '20', CURDATE());
+CALL sp_reglas_margen_create(3, 4, '24', CURDATE());
+CALL sp_reglas_margen_create(4, 1, '26', CURDATE());
+CALL sp_reglas_margen_create(4, 4, '18', CURDATE());
+CALL sp_reglas_margen_create(1, 3, '27', CURDATE());
+CALL sp_reglas_margen_create(2, 4, '29', CURDATE());
 
 CALL sp_usuarios_create('jsue', 'josue@gmail.com', '123456', '55500001', 'admin');
 CALL sp_usuarios_create('Ana Pérez', 'ana@empresa.com', 'admin123', '55500002', 'usuario');
@@ -506,4 +508,7 @@ CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123', '55
 CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456', '55500009', 'usuario');
 CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987', '55500010', 'usuario');
 
+
 ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
+
+create ta
