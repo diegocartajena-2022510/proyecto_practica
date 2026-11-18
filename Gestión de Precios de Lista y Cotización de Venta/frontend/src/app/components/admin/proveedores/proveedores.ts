@@ -25,6 +25,11 @@ export class Proveedores implements OnInit {
   mostrarModalRegla = false;
   reglaActual: any = { id_regla: null, id_categoria: null, categoria_nombre: '', porcentaje_margen: 0 };
 
+  tasaCambio:number=1.000;
+  archivoSeleccionado:File|null=null;
+  mensajeImportacion:String='';
+  cargandoImportacion:boolean=false;
+
   constructor(
     private router: Router,
     private pro: ProveedoresService,
@@ -66,6 +71,16 @@ export class Proveedores implements OnInit {
       },
       error: (err) => console.error('Error al cargar categorías:', err)
     });
+
+    this.pro.obtenerTipoCambio().subscribe({
+      next:(data)=>{
+        if(data && data.tasa){
+          this.tasaCambio=data.tasa;
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err)=>console.error('Error al obtener el tipo de cambio', err  )
+    })
   
   }
 
@@ -149,11 +164,52 @@ export class Proveedores implements OnInit {
       error: (err) => console.error('Error al actualizar regla de margen:', err)
     });
   }
+
+  guardarTipoCambio(){
+    if(!this.tasaCambio||this.tasaCambio<=0)return;
+
+    this.pro.actualizarTipoCambio(this.tasaCambio).subscribe({
+        next:()=>{
+          alert('tipo fr cambio actualizado correctaemente');
+        },
+        error:(err)=>console.error('Error al actualizar tipo de cambio',err)
+    })
+  }
+
+ onArchivoSeleccionado(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.archivoSeleccionado = file;
+      this.mensajeImportacion = '';
+    }
+  }
+  subirArchivoExcel(){
+    if(!this.archivoSeleccionado){
+      alert('porfavor seleccione un archivo excel o csv primero');
+      return;
+    }
+    this.cargandoImportacion=true;
+    this.pro.importarProductos(this.archivoSeleccionado).subscribe({
+      next:(res:any)=>{
+        this.mensajeImportacion=res.message|| 'importacion completada';
+        this.archivoSeleccionado=null
+        this.cargandoImportacion=false;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        this.mensajeImportacion = 'Error: ' + (err.error?.error || 'No se pudo procesar el archivo.');
+        this.cargandoImportacion = false;
+        this.cdr.detectChanges();
+      }
+    })
+  }
   regresarMenu() { this.router.navigate(['/principal']); }
   onCatalogo() {
     this.router.navigate([this.datosUsuario?.rol === 'admin' ? '/catalogo-admin' : '/catalogo']);
   }
+ 
   OnSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
   onPerfil() { this.router.navigate(['/perfil']); }
   cerrarSesion() { this.router.navigate(['/login']); }
 }
+
