@@ -36,6 +36,7 @@ create table productos(
     constraint fk_id_marca foreign key (id_marca) references marcas(id_marca) on delete cascade,
     constraint fk_id_categoria foreign key (id_categoria) references categoria(id_categoria) on delete cascade
 );
+
 create table reglas_margen(
 	id_margen int primary key auto_increment,
     id_categoria int,
@@ -115,6 +116,7 @@ delimiter $$
 		insert into categoria(nombre) values (c_nombre);
     end $$
 delimiter ;
+
 
 -- editar categoria --
 delimiter $$
@@ -510,5 +512,3 @@ CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987', '5550001
 
 
 ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
-
-create ta
