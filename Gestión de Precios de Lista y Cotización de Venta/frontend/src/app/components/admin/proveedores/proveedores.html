@@ -86,6 +86,65 @@
         </div>
       </aside>
     </div>
+    <!-- SECCIÓN MÓDULO 1: TIPO DE CAMBIO E IMPORTACIÓN MASIVA -->
+    <div class="catalog-layout-cart" style="margin-bottom: 1.5rem;">
+      
+      <!-- Tarjeta Tipo de Cambio -->
+      <aside class="summary-card-right">
+        <div class="card-header">
+          <h2>Tipo de Cambio (USD → Local)</h2>
+          <span>Tasa diaria</span>
+        </div>
+        <div class="modal-form" style="padding: 1rem 0;">
+          <div class="form-group">
+            <label>Valor de 1 USD en Moneda Local</label>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <input 
+                type="number" 
+                [(ngModel)]="tasaCambio" 
+                step="0.0001" 
+                min="0.01" 
+                class="form-input" 
+                placeholder="Ej. 7.7500">
+              <button type="button" class="primary-btn" (click)="guardarTipoCambio()">
+                Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Tarjeta Importación Masiva -->
+      <aside class="summary-card-right">
+        <div class="card-header">
+          <h2>Importación Masiva de Precios</h2>
+          <span>Excel / CSV</span>
+        </div>
+        <div class="modal-form" style="padding: 1rem 0;">
+          <div class="form-group">
+            <label>Seleccionar lista de proveedor (.xlsx, .csv)</label>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <input 
+                type="file" 
+                accept=".xlsx, .xls, .csv" 
+                (change)="onArchivoSeleccionado($event)" 
+                class="form-input">
+              <button 
+                type="button" 
+                class="primary-btn" 
+                [disabled]="!archivoSeleccionado || cargandoImportacion" 
+                (click)="subirArchivoExcel()">
+                {{ cargandoImportacion ? 'Subiendo...' : 'Importar' }}
+              </button>
+            </div>
+          </div>
+          <small *ngIf="mensajeImportacion" style="color: #2563eb; font-weight: 500;">
+            {{ mensajeImportacion }}
+          </small>
+        </div>
+      </aside>
+
+    </div>
   </main>
 
   <div class="modal-overlay" *ngIf="mostrarModalProveedor">
