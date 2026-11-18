@@ -37,4 +37,26 @@ export class ProveedoresService {
   listarCategorias(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/categorias`);
   }
+
+   obtenerTipoCambio(){
+    return this.http.get<any>(`${this.apiUrl}/tipo-cambio`);
+  }
+
+  actualizarTipoCambio(tasa:number){
+    return this.http.put(`${this.apiUrl}/tipo-cambio`, { tasa });
+  }
+
+  importarProductos(archivo:File){
+    const formData=new FormData();
+    formData.append('archivo',archivo);
+    return this.http.post(`${this.apiUrl}/importar-productos`, formData);
+  }
+
+  listarProductos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/productos-pvp`);
+  }
+  listarProductosPVP(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/productos-pvp`);
+  }
+  
 }
