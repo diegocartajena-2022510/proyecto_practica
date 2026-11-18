@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class productosService {
     private apiUrl = 'http://localhost:3000/api/productos';
-
+    private apiBaseUrl = 'http://localhost:3000/api'; 
     constructor(private http: HttpClient) {}
 
     getProductos(): Observable<any> {
@@ -27,6 +27,10 @@ export class productosService {
     }
 
     getCategorias(): Observable<any> {
-    return this.http.get('http://localhost:3000/api/categorias');
-}
+        return this.http.get(`${this.apiBaseUrl}/categorias`);
+    }
+
+    listarProductosPVP(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBaseUrl}/productos-pvp`); // <--- Apunta a /api/productos-pvp
+    }   
 }
