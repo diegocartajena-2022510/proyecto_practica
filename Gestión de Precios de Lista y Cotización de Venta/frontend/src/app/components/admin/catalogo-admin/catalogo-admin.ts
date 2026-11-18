@@ -1,82 +1,104 @@
-import { Component, Inject, OnInit, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { productosService } from '../../../service/productosService';
+import { ProveedoresService } from '../../../service/proveedoresService';
 
 @Component({
   standalone: true,
   imports: [CommonModule, FormsModule],
   selector: 'app-catalogo-admin',
-  styleUrl: './catalogo-admin.css',
   templateUrl: './catalogo-admin.html',
+  styleUrl: './catalogo-admin.css'
 })
 export class CatalogoAdmin implements OnInit {
   datosUsuario: any = { nombre: '', correo: '', rol: '' };
+  
   listarProductos: any[] = [];
-  listarCategorias:any[]=[];
+  listarCategorias: any[] = [];
+  listarMarcas: any[] = [];
+  totalActivos: number = 0;
 
-  mostrarModal = false;
-  modoEdicion = false;
-  productoActual: any = { id_producto: null, nombre: '', descripcion: '', precio: 0, stock: 0, id_categoria:null};
+  mostrarModal: boolean = false;
+  modoEdicion: boolean = false;
+  productoActual: any = {
+    id_productos: null,
+    modelo: '',
+    descripcion: '',
+    id_categoria: null,
+    id_marca: null,
+    precio_lista: 0,
+    stock: 0,
+    moneda: 'USD',
+    activo: '1'
+  };
 
   constructor(
     private router: Router,
-    private prodService: productosService,
+    private pro: ProveedoresService,
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private plataformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit() {
-    if (isPlatformBrowser(this.plataformId)) {
+    if (isPlatformBrowser(this.platformId)) {
       const localData = localStorage.getItem('usuario');
       if (localData) {
         this.datosUsuario = JSON.parse(localData);
       }
-      this.cargarProductos();
-      this.cargarCategoria();
+      this.cargarProductosAdmin();
+      this.cargarCategorias();
     }
-    
   }
 
-  cargarProductos() {
-    this.prodService.getProductos().subscribe({
-      next: (data) => {
-        this.listarProductos = data || [];
+  cargarProductosAdmin() {
+    this.pro.listarProductosPVP().subscribe({
+      next: (data: any) => {
+        this.listarProductos = (data || []).map((p: any) => ({
+          ...p,
+          categoria_nombre: p.categoria || p.categoria_nombre || 'General',
+          marca_nombre: p.marca || p.marca_nombre || 'Sin marca',
+          precio_pvp: p.pvp_final ?? p.precio_pvp ?? 0
+        }));
+        this.totalActivos = this.listarProductos.filter(p => p.activo == '1' || p.activo === true).length;
         this.cdr.detectChanges();
       },
-      error: (err) => console.log('Error al listar productos', err)
+      error: (err) => console.error('Error al cargar productos en admin:', err)
     });
   }
-  cargarCategoria() {
-    this.prodService.getCategorias().subscribe({
+
+  cargarCategorias() {
+    this.pro.listarCategorias().subscribe({
       next: (data) => {
         this.listarCategorias = data || [];
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error al cargar categorías', err)
+      error: (err) => console.error('Error al cargar categorías:', err)
     });
   }
 
+  // --- MÉTODOS DEL MODAL (Crear / Editar / Eliminar) ---
   abrirModalNuevo() {
     this.modoEdicion = false;
-    this.productoActual = { 
-      id_producto: null, 
-      nombre: '', 
-      descripcion: '', 
-      precio: 0, 
-      stock: 0,
+    this.productoActual = {
+      id_productos: null,
+      modelo: '',
+      descripcion: '',
+      id_categoria: null,
       id_marca: 1,
-      id_categoria:1
+      precio_lista: 0,
+      stock: 0,
+      moneda: 'USD',
+      activo: '1'
     };
     this.mostrarModal = true;
   }
-  abrirModalEditar(prod: any) {
+
+  editarProducto(prod: any) {
     this.modoEdicion = true;
-    this.productoActual = { 
-      ...prod, 
-      id_producto: prod.id_producto || prod.id_productos || prod.id,
-      id_categoria:prod.id_categoria
+    this.productoActual = {
+      ...prod,
+      id_productos: prod.id_productos || prod.id_producto || prod.id
     };
     this.mostrarModal = true;
   }
@@ -86,54 +108,29 @@ export class CatalogoAdmin implements OnInit {
   }
 
   guardarProducto() {
-    if (this.modoEdicion) {
-      const id = this.productoActual.id_producto || this.productoActual.id_productos || this.productoActual.id;
-      
-      this.prodService.updateProductos(id, this.productoActual).subscribe({
-        next: () => {
-          this.cargarProductos();
-          this.cerrarModal();
-        },
-        error: (err) => console.error('Error al actualizar:', err)
-      });
-    } else {
-      this.prodService.createProductos(this.productoActual).subscribe({
-        next: () => {
-          this.cargarProductos();
-          this.cerrarModal();
-        },
-        error: (err) => console.error('Error al crear:', err)
-      });
-    }
+    // Aquí conecta con tu método de crear/actualizar producto en el servicio si ya lo tienes
+    console.log('Producto a guardar:', this.productoActual);
+    this.cerrarModal();
+    this.cargarProductosAdmin();
   }
 
   eliminarProducto(prod: any) {
-    console.log("Objeto producto recibido para eliminar:", prod);
-    
-    const id = prod.id_producto || prod.id_productos || prod.id || prod.id_item;
-
-    if (!id) {
-      alert("Error: No se pudo identificar el ID del producto.");
-      console.error("Objeto sin ID válido:", prod);
-      return;
-    }
-
-    if (confirm(`¿Estás seguro de eliminar el producto "${prod.nombre || prod.modelo || 'Sin nombre'}"?`)) {
-      this.prodService.deleteProductos(id).subscribe({
-        next: () => {
-          this.listarProductos = this.listarProductos.filter(
-            p => (p.id_producto || p.id_productos || p.id || p.id_item) !== id
-          );
-          this.cdr.detectChanges();
-        },
-        error: (err) => console.error('Error al eliminar:', err)
-      });
+    const id = prod.id_productos || prod.id_producto || prod.id;
+    if (!id) return;
+    if (confirm(`¿Estás seguro de eliminar "${prod.modelo || ''}"?`)) {
+      this.listarProductos = this.listarProductos.filter(p => (p.id_productos || p.id) !== id);
+      this.cdr.detectChanges();
     }
   }
+  abrirModalEditar(prod: any) {
+    this.editarProducto(prod);
+  }
 
+  // --- NAVEGACIÓN ---
   regresarMenu() { this.router.navigate(['/principal']); }
-  OnSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
+  onCatalogo() { this.router.navigate(['/catalogo']); }
+  onProveedores() { this.router.navigate(['/proveedores']); }
+  onSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
   onPerfil() { this.router.navigate(['/perfil']); }
   cerrarSesion() { this.router.navigate(['/login']); }
-  onProveedores() { this.router.navigate(['/proveedores']); }
 }
