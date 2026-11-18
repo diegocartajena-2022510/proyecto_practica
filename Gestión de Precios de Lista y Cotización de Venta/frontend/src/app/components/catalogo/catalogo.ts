@@ -8,6 +8,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 @Component({
+  standalone: true,
   imports: [CommonModule, FormsModule],
   selector: 'app-catalogo',
   styleUrl: './catalogo.css',
@@ -26,7 +27,7 @@ export class Catalogo {
   totalSinStock: number = 0;
 
   itemsCotizacion: { producto: any; cantidad: number }[] = [];
-  monedaSeleccionada: string = 'MXN';
+  monedaSeleccionada: string = 'Q'; // Cambiado a Quetzales según tus vistas
   notasAdicionales: string = '';
   datosUsuario: any = { nombre: '', correo: '' };
   
@@ -42,32 +43,42 @@ export class Catalogo {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.obtenerProductos(); 
       const localData = localStorage.getItem('usuario');
       if (localData) {
         this.datosUsuario = JSON.parse(localData);
       }
+      // Llamamos directamente al motor de precios PVP que unifica todo
+      this.cargarProductosCatalogo();
     } 
   }
 
-  calcularResumen() {
-    this.totalActivos = this.listaProductos.filter(p => (p.stock ?? 1) > 0).length;
-    this.totalRevision = this.listaProductos.filter(producto => producto.estado === 'revisión').length;
-    this.totalSinStock = this.listaProductos.filter(p => (p.stock ?? 1) <= 0).length;
-  }
-
-  obtenerProductos() {
-    this.productosService.getProductos().subscribe({
-      next: (res: any) => {
-        this.listaProductos = res;
-        this.productosFiltrados = res;
+  cargarProductosCatalogo() {
+    this.productosService.listarProductosPVP().subscribe({
+      next: (data: any[]) => {
+        // Mapeamos los campos del backend a los nombres que espera tu HTML
+        this.listaProductos = (data || []).map((p: any) => ({
+          ...p,
+          id_producto: p.id_productos || p.id_producto || p.id,
+          categoria_nombre: p.categoria || p.categoria_nombre || 'General',
+          precio_pvp: p.pvp_final ?? p.precio_pvp ?? p.precio ?? 0,
+          precio_lista: p.precio_lista ?? 0
+        }));
+        
+        this.productosFiltrados = this.listaProductos;
         this.calcularResumen();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error(err);
+        console.error('Error al cargar catálogo PVP:', err);
       }
     });
+  }
+
+  calcularResumen() {
+    this.totalActivos = this.listaProductos.filter(p => p.activo == '1' || p.activo === true || (p.stock ?? 1) > 0).length;
+    this.totalSinStock = this.listaProductos.filter(p => !p.stock || p.stock <= 0).length;
+    this.totalRevision = this.listaProductos.length - this.totalActivos - this.totalSinStock;
+    if (this.totalRevision < 0) this.totalRevision = 0;
   }
 
   filtrarPorCategoria(categoria: string) {
@@ -75,7 +86,9 @@ export class Catalogo {
     if (categoria === 'Todos') {
       this.productosFiltrados = this.listaProductos;
     } else {
-      this.productosFiltrados = this.listaProductos.filter(producto => producto.categoria_nombre === categoria);
+      this.productosFiltrados = this.listaProductos.filter(producto => 
+        producto.categoria_nombre?.toLowerCase() === categoria.toLowerCase()
+      );
     }
   }
 
@@ -91,11 +104,12 @@ export class Catalogo {
 
   agregarAlCarrito(producto: any, event?: Event) {
     event?.stopPropagation();
-    const index = this.itemsCotizacion.findIndex(item => 
-      (item.producto.id_producto && item.producto.id_producto === producto.id_producto) ||
-      (item.producto.id && item.producto.id === producto.id) ||
-      (item.producto.modelo === producto.modelo)
-    );
+    const prodId = producto.id_productos || producto.id_producto || producto.id;
+    
+    const index = this.itemsCotizacion.findIndex(item => {
+      const itemId = item.producto.id_productos || item.producto.id_producto || item.producto.id;
+      return itemId === prodId || item.producto.modelo === producto.modelo;
+    });
 
     if (index !== -1) {
       this.itemsCotizacion[index] = {
@@ -124,7 +138,7 @@ export class Catalogo {
   }
 
   get iva(): number {
-    return this.subtotal * 0.16;
+    return this.subtotal * 0.16; // Coincide con el 16% de tu plantilla PDF / Cotización
   }
 
   get total(): number {
@@ -148,7 +162,7 @@ export class Catalogo {
   cerrarSesion() { this.router.navigate(['/login']); }
   onCotizar() { this.router.navigate(['/cotizar']); }
   onSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
-  onProveedores(){this.router.navigate(['/proveedores']);}
+  onProveedores(){ this.router.navigate(['/proveedores']); }
 
   onBuscarpoducto(event: any) {
     const texto = event.target.value.trim().toLowerCase();
@@ -158,7 +172,11 @@ export class Catalogo {
       return;
     }
 
-    this.productosFiltrados = this.listaProductos.filter(producto => {
+    const baseList = this.categoriaSeleccionada === 'Todos' 
+      ? this.listaProductos 
+      : this.listaProductos.filter(p => p.categoria_nombre?.toLowerCase() === this.categoriaSeleccionada.toLowerCase());
+
+    this.productosFiltrados = baseList.filter(producto => {
       const modelo = producto.modelo?.toLowerCase() || '';
       const descripcion = producto.descripcion?.toLowerCase() || '';
       const categoria = producto.categoria_nombre?.toLowerCase() || '';
@@ -206,8 +224,9 @@ export class Catalogo {
       this.cdr.detectChanges();
     });
   }
+
   onGestionProveedores() {
-    alert('Módulo de Proveedores (Próximamente)');
+    this.router.navigate(['/proveedores']);
   }
 
   onConfigurarPrecios() {
