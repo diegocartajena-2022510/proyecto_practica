@@ -11,7 +11,7 @@
     <nav class="nav-menu" aria-label="Navegación principal">
       <button class="nav-item" (click)="regresarMenu()">Inicio</button>
       <button class="nav-item active">Catálogo</button>
-      <button class="nav-item" (click)="OnSobreNosotros()">Sobre nosotros</button>
+      <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item" routerLink="/proveedores" (click)="onProveedores()">
         Proveedores &amp; Márgenes
       </button>
@@ -40,7 +40,7 @@
         <div>
           <p style="margin: 0 0 6px; color: #64748b; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">Inventario del catálogo</p>
           <h2 id="productos-registrados" style="font-size: 1.4rem; letter-spacing: -0.02em;">Productos Registrados</h2>
-          <p style="margin: 6px 0 0; color: #64748b; font-size: 0.88rem;">Consulta precios y existencias de tus productos.</p>
+          <p style="margin: 6px 0 0; color: #64748b; font-size: 0.88rem;">Consulta precios PVP calculados y existencias de tus productos.</p>
         </div>
         <span style="padding: 7px 12px; color: #1d4ed8; background: #eff6ff; border: 1px solid #dbeafe; font-size: 0.82rem;">{{ listarProductos.length }} activos</span>
       </div>
@@ -55,12 +55,17 @@
           <div style="flex: 1; min-width: 0; gap: 5px;">
             <strong style="font-size: 1rem; color: #0f172a;">{{ prod.modelo }}</strong>
             <small style="line-height: 1.5;">{{ prod.descripcion || 'Sin descripción' }}</small>
-            <span style="width: fit-content; margin-top: 5px; padding: 5px 10px; border: 1px solid #dbeafe; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 0.8rem; font-weight: 700;">
-              Precio <strong style="color: inherit; font-size: inherit;">${{ prod.precio_pvp||prod.precio_lista}}</strong>
-            </span>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px;">
+              <span style="width: fit-content; padding: 5px 10px; border: 1px solid #dbeafe; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 0.8rem; font-weight: 700;">
+                PVP: <strong style="color: inherit; font-size: inherit;">Q {{ (prod.precio_pvp ?? prod.precio_lista ?? 0) | number:'1.2-2' }}</strong>
+              </span>
+              <small *ngIf="prod.precio_lista != null" style="color: #64748b; font-size: 0.78rem;">
+                Base ({{ prod.moneda || 'Q' }}): {{ prod.precio_lista | number:'1.2-2' }}
+              </small>
+            </div>
           </div>
           <aside class="item-actions-right" aria-label="Acciones del producto" style="flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 9px;">
-            <span class="stock-badge" style="padding: 7px 10px; border-radius: 999px;">Stock: {{ prod.stock }}</span>
+            <span class="stock-badge" style="padding: 7px 10px; border-radius: 999px;">Stock: {{ prod.stock ?? 0 }}</span>
             <button class="ghost-btn small-btn" style="border: 1px solid #dbeafe;" (click)="abrirModalEditar(prod)">Editar</button>
             <button class="btn-remove" style="width: 34px; height: 34px; border-radius: 9px;" (click)="eliminarProducto(prod)" title="Eliminar" aria-label="Eliminar producto">×</button>
           </aside>
@@ -78,7 +83,7 @@
 
       <form (ngSubmit)="guardarProducto()" class="modal-form">
         <div class="form-group">
-          <label>Nombre del Producto</label>
+          <label>Nombre / Modelo del Producto</label>
           <input type="text" [(ngModel)]="productoActual.modelo" name="modelo" required class="form-input">
         </div>
 
@@ -90,19 +95,24 @@
         <div class="form-group">
           <label>Categoría</label>
           <select [(ngModel)]="productoActual.id_categoria" name="id_categoria" required class="form-input">
-            <option [value]="null" disabled selected>Seleccione una categoría</option>
-            <option *ngFor="let cat of listarCategorias" [value]="cat.id_categoria">
+            <option [ngValue]="null" disabled>Seleccione una categoría</option>
+            <option *ngFor="let cat of listarCategorias" [ngValue]="cat.id_categoria">
               {{ cat.nombre }}
             </option>
           </select>
-      </div>
-
-        
+        </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Precio (Q)</label>
-            <input type="number" [(ngModel)]="productoActual.precio_lista" name="precio" required class="form-input">
+            <label>Precio de lista</label>
+            <input type="number" step="0.01" [(ngModel)]="productoActual.precio_lista" name="precio_lista" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Moneda</label>
+            <select [(ngModel)]="productoActual.moneda" name="moneda" class="form-input">
+              <option value="USD">USD ($)</option>
+              <option value="Q">Quetzales (Q)</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Stock</label>
