@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProveedoresService } from '../../../service/proveedoresService';
+import { productosService } from '../../../service/productosService';
 
 @Component({
   standalone: true,
@@ -21,24 +22,29 @@ export class CatalogoAdmin implements OnInit {
 
   mostrarModal: boolean = false;
   modoEdicion: boolean = false;
-  productoActual: any = {
-    id_productos: null,
-    modelo: '',
-    descripcion: '',
-    id_categoria: null,
-    id_marca: null,
-    precio_lista: 0,
-    stock: 0,
-    moneda: 'USD',
-    activo: '1'
-  };
+  productoActual: any = this.getProductoVacio();
 
   constructor(
     private router: Router,
     private pro: ProveedoresService,
     private cdr: ChangeDetectorRef,
+    private productoSer: productosService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
+
+  private getProductoVacio() {
+    return {
+      id_productos: null,
+      modelo: '',
+      descripcion: '',
+      id_categoria: null,
+      id_marca: 1,
+      precio_lista: 0,
+      stock: 0,
+      moneda: 'USD',
+      activo: '1'
+    };
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -60,7 +66,9 @@ export class CatalogoAdmin implements OnInit {
           marca_nombre: p.marca || p.marca_nombre || 'Sin marca',
           precio_pvp: p.pvp_final ?? p.precio_pvp ?? 0
         }));
-        this.totalActivos = this.listarProductos.filter(p => p.activo == '1' || p.activo === true).length;
+        this.totalActivos = this.listarProductos.filter(
+          p => p.activo == '1' || p.activo === true || String(p.activo).toLowerCase() === 'activo'
+        ).length;
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al cargar productos en admin:', err)
@@ -77,20 +85,9 @@ export class CatalogoAdmin implements OnInit {
     });
   }
 
-  // --- MÉTODOS DEL MODAL (Crear / Editar / Eliminar) ---
   abrirModalNuevo() {
     this.modoEdicion = false;
-    this.productoActual = {
-      id_productos: null,
-      modelo: '',
-      descripcion: '',
-      id_categoria: null,
-      id_marca: 1,
-      precio_lista: 0,
-      stock: 0,
-      moneda: 'USD',
-      activo: '1'
-    };
+    this.productoActual = this.getProductoVacio();
     this.mostrarModal = true;
   }
 
@@ -98,7 +95,13 @@ export class CatalogoAdmin implements OnInit {
     this.modoEdicion = true;
     this.productoActual = {
       ...prod,
-      id_productos: prod.id_productos || prod.id_producto || prod.id
+      id_productos: prod.id_productos || prod.id_producto || prod.id,
+      id_categoria: prod.id_categoria ?? null,
+      id_marca: prod.id_marca ?? 1,
+      precio_lista: prod.precio_lista ?? 0,
+      stock: prod.stock ?? 0,
+      moneda: prod.moneda || 'USD',
+      activo: prod.activo ?? '1'
     };
     this.mostrarModal = true;
   }
@@ -108,12 +111,32 @@ export class CatalogoAdmin implements OnInit {
   }
 
   guardarProducto() {
-    // Aquí conecta con tu método de crear/actualizar producto en el servicio si ya lo tienes
-    console.log('Producto a guardar:', this.productoActual);
-    this.cerrarModal();
-    this.cargarProductosAdmin();
-  }
+  const payload = {
+    ...this.productoActual,
+    id_categoria: Number(this.productoActual.id_categoria),
+    id_marca: Number(this.productoActual.id_marca || 1),
+    precio_lista: Number(this.productoActual.precio_lista || 0),
+    stock: Number(this.productoActual.stock || 0),
+    moneda: this.productoActual.moneda || 'USD',
+    activo: this.productoActual.activo ?? '1'
+  };
 
+  const peticion$ = this.modoEdicion && payload.id_productos
+    ? this.productoSer.updateProductos(payload.id_productos, payload)
+    : this.productoSer.createProductos(payload);
+
+    peticion$.subscribe({
+      next: () => {
+        this.cerrarModal();
+        this.productoActual = this.getProductoVacio();
+        this.cargarProductosAdmin();
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.error('Error al guardar producto:', err);
+      }
+    });
+}
   eliminarProducto(prod: any) {
     const id = prod.id_productos || prod.id_producto || prod.id;
     if (!id) return;
@@ -122,11 +145,11 @@ export class CatalogoAdmin implements OnInit {
       this.cdr.detectChanges();
     }
   }
+
   abrirModalEditar(prod: any) {
     this.editarProducto(prod);
   }
 
-  // --- NAVEGACIÓN ---
   regresarMenu() { this.router.navigate(['/principal']); }
   onCatalogo() { this.router.navigate(['/catalogo']); }
   onProveedores() { this.router.navigate(['/proveedores']); }
