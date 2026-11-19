@@ -36,7 +36,6 @@ create table productos(
     constraint fk_id_marca foreign key (id_marca) references marcas(id_marca) on delete cascade,
     constraint fk_id_categoria foreign key (id_categoria) references categoria(id_categoria) on delete cascade
 );
-
 create table reglas_margen(
 	id_margen int primary key auto_increment,
     id_categoria int,
@@ -46,7 +45,6 @@ create table reglas_margen(
     constraint id_categoria_fk foreign key (id_categoria) references categoria(id_categoria) on delete cascade,
     constraint id_marca_fk foreign key (id_marca) references marcas(id_marca) on delete cascade
 );
-
 create table if not exists tipo_cambio(
 	id_tipo_cambio int primary key not null,
     tasa decimal(10,4) not null,
@@ -510,5 +508,7 @@ CALL sp_usuarios_create('Valeria Mora', 'valeria@empresa.com', 'valeria123', '55
 CALL sp_usuarios_create('Andrés Silva', 'andres@empresa.com', 'andres456', '55500009', 'usuario');
 CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987', '55500010', 'usuario');
 
+SELECT id_productos, modelo, activo, stock, precio_lista, moneda, id_categoria, id_marca
+FROM productos;
 
-ALTER TABLE usuario MODIFY COLUMN fecha_creacion DATE DEFAULT (CURRENT_DATE);
+
