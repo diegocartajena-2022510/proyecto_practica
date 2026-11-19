@@ -5,6 +5,7 @@ import { AuthService } from '../../service/auth';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: true,
   imports: [CommonModule, FormsModule],
   selector: 'app-login',
   styleUrl: './login.css',
@@ -14,9 +15,10 @@ export class Login {
   correo: string = '';
   pasword: string = '';
   nombre: string = '';
-  telefono: number = 0;
+  telefono: number | null = null;
   errorMessage: string = '';
   isRegisterOpen = false;
+  isLoading = false;
 
   private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -26,29 +28,44 @@ export class Login {
 
   onLogin() {
     this.errorMessage = '';
-    const credenciales = { correo: this.correo, pasword: this.pasword };
+
+    const correoLimpio = (this.correo || '').trim();
+    const passwordLimpio = (this.pasword || '').trim();
+
+    if (!correoLimpio || !passwordLimpio) {
+      this.errorMessage = 'Complete todos los campos';
+      return;
+    }
+
+    if (!this.isValidEmail(correoLimpio)) {
+      this.errorMessage = 'Ingrese un correo válido';
+      return;
+    }
+
+    this.isLoading = true;
+    const credenciales = { correo: correoLimpio, pasword: passwordLimpio };
 
     this.auth.login(credenciales).subscribe({
       next: (res: any) => {
-        console.log('Login Exitoso:', res);
+        this.isLoading = false;
+        let datosAguardar = res?.usuario || res;
 
-        // Si res.usuario es un array (ej: [ {id_usuario: 2, ...} ]), extraemos el índice [0]. 
-        // Si es un objeto directo, lo usamos tal cual.
-        let datosAguardar = res.usuario || res;
-        
         if (Array.isArray(datosAguardar)) {
           datosAguardar = datosAguardar[0];
         }
 
-        if (datosAguardar) {
-          localStorage.setItem('usuario', JSON.stringify(datosAguardar));
+        if (!datosAguardar || (typeof datosAguardar === 'object' && Object.keys(datosAguardar).length === 0)) {
+          this.errorMessage = 'Credenciales inválidas';
+          return;
         }
 
+        localStorage.setItem('usuario', JSON.stringify(datosAguardar));
         this.router.navigate(['/principal']);
       },
       error: (err) => {
+        this.isLoading = false;
         console.error(err);
-        this.errorMessage = err.error?.error || 'Ocurrió un error al iniciar sesión';
+        this.errorMessage = err.error?.error || err.error?.mensaje || 'Correo o contraseña incorrectos';
       }
     });
   }
@@ -62,24 +79,32 @@ export class Login {
   onRegisterSubmit() {
     this.errorMessage = '';
 
-    if (!this.nombre || !this.correo || !this.pasword || !this.telefono) {
+    const nombreLimpio = (this.nombre || '').trim();
+    const correoLimpio = (this.correo || '').trim();
+    const passwordLimpio = (this.pasword || '').trim();
+    const telStr = this.telefono !== null && this.telefono !== undefined ? String(this.telefono).trim() : '';
+
+    if (!nombreLimpio || !correoLimpio || !passwordLimpio || !telStr) {
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
-    } 
-    if (!this.isValidEmail(this.correo)) {
+    }
+
+    if (!this.isValidEmail(correoLimpio)) {
       this.errorMessage = 'Por favor, ingrese un correo válido';
       return;
-    } 
-    if (this.pasword.length < 6) {
+    }
+
+    if (passwordLimpio.length < 6) {
       this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
       return;
-    } 
-    if (this.telefono.toString().length < 8 || this.telefono.toString().length > 8) {
+    }
+
+    if (!/^\d{8}$/.test(telStr)) {
       this.errorMessage = 'Este número de teléfono no es válido, intente de nuevo';
       return;
     }
 
-    this.submitRegister();
+    this.submitRegister(nombreLimpio, correoLimpio, passwordLimpio, Number(telStr));
   }
 
   closeRegister() {
@@ -87,13 +112,8 @@ export class Login {
     this.errorMessage = '';
   }
 
-  submitRegister() {
-    const credenciales = { 
-      nombre: this.nombre, 
-      correo: this.correo, 
-      pasword: this.pasword, 
-      telefono: this.telefono 
-    };
+  submitRegister(nombre: string, correo: string, pasword: string, telefono: number) {
+    const credenciales = { nombre, correo, pasword, telefono };
 
     this.auth.register(credenciales).subscribe({
       next: (res: any) => {
