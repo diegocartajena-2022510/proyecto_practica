@@ -35,6 +35,15 @@
       </div>
     </section>
 
+    <div
+      *ngIf="errorMessage && !mostrarModal"
+      role="alert"
+      aria-live="assertive"
+      style="margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.86rem; font-weight: 600;"
+    >
+      {{ errorMessage }}
+    </div>
+
     <section class="summary-card-right" style="margin-top: 24px; padding: 28px; border-radius: 22px; box-shadow: 0 16px 36px rgba(15, 23, 42, 0.07);" aria-labelledby="productos-registrados">
       <div class="card-header" style="align-items: flex-end; margin-bottom: 22px; padding-bottom: 18px;">
         <div>
@@ -64,10 +73,17 @@
               </small>
             </div>
           </div>
+
           <aside class="item-actions-right" aria-label="Acciones del producto" style="flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 9px;">
             <span class="stock-badge" style="padding: 7px 10px; border-radius: 999px;">Stock: {{ prod.stock ?? 0 }}</span>
             <button class="ghost-btn small-btn" style="border: 1px solid #dbeafe;" (click)="abrirModalEditar(prod)">Editar</button>
-            <button class="btn-remove" style="width: 34px; height: 34px; border-radius: 9px;" (click)="eliminarProducto(prod)" title="Eliminar" aria-label="Eliminar producto">×</button>
+            <button
+              class="btn-remove"
+              style="width: 34px; height: 34px; border-radius: 9px;"
+              [disabled]="eliminandoId === (prod.id_productos || prod.id_producto || prod.id)"
+              (click)="eliminarProducto(prod)"
+              title="Eliminar"
+              aria-label="Eliminar producto">×</button>
           </aside>
         </article>
       </div>
@@ -78,23 +94,53 @@
     <div class="modal-card">
       <div class="card-header">
         <h2>{{ modoEdicion ? 'Editar Producto' : 'Nuevo Producto' }}</h2>
-        <button class="btn-remove" (click)="cerrarModal()">×</button>
+        <button type="button" class="btn-remove" (click)="cerrarModal()" [disabled]="guardando">×</button>
       </div>
 
-      <form (ngSubmit)="guardarProducto()" class="modal-form">
+      <div
+        *ngIf="errorMessage"
+        role="alert"
+        aria-live="assertive"
+        style="margin: 0 0 14px; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.86rem; font-weight: 600;"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="guardarProducto()" class="modal-form" novalidate>
         <div class="form-group">
           <label>Nombre / Modelo del Producto</label>
-          <input type="text" [(ngModel)]="productoActual.modelo" name="modelo" required class="form-input">
+          <input
+            type="text"
+            [(ngModel)]="productoActual.modelo"
+            (ngModelChange)="errorMessage = ''"
+            name="modelo"
+            placeholder="Ej. Router WiFi 6 AX3000"
+            required
+            class="form-input"
+          >
         </div>
 
         <div class="form-group">
           <label>Descripción</label>
-          <textarea [(ngModel)]="productoActual.descripcion" name="descripcion" class="form-input" rows="2"></textarea>
+          <textarea
+            [(ngModel)]="productoActual.descripcion"
+            (ngModelChange)="errorMessage = ''"
+            name="descripcion"
+            placeholder="Detalles o especificaciones del producto"
+            class="form-input"
+            rows="2"
+          ></textarea>
         </div>
 
         <div class="form-group">
           <label>Categoría</label>
-          <select [(ngModel)]="productoActual.id_categoria" name="id_categoria" required class="form-input">
+          <select
+            [(ngModel)]="productoActual.id_categoria"
+            (ngModelChange)="errorMessage = ''"
+            name="id_categoria"
+            required
+            class="form-input"
+          >
             <option [ngValue]="null" disabled>Seleccione una categoría</option>
             <option *ngFor="let cat of listarCategorias" [ngValue]="cat.id_categoria">
               {{ cat.nombre }}
@@ -105,24 +151,49 @@
         <div class="form-row">
           <div class="form-group">
             <label>Precio de lista</label>
-            <input type="number" step="0.01" [(ngModel)]="productoActual.precio_lista" name="precio_lista" required class="form-input">
+            <input
+              type="number"
+              step="0.01"
+              min="0.01"
+              [(ngModel)]="productoActual.precio_lista"
+              (ngModelChange)="errorMessage = ''"
+              name="precio_lista"
+              required
+              class="form-input"
+            >
           </div>
           <div class="form-group">
             <label>Moneda</label>
-            <select [(ngModel)]="productoActual.moneda" name="moneda" class="form-input">
+            <select
+              [(ngModel)]="productoActual.moneda"
+              (ngModelChange)="errorMessage = ''"
+              name="moneda"
+              class="form-input"
+            >
               <option value="USD">USD ($)</option>
               <option value="Q">Quetzales (Q)</option>
             </select>
           </div>
           <div class="form-group">
             <label>Stock</label>
-            <input type="number" [(ngModel)]="productoActual.stock" name="stock" required class="form-input">
+            <input
+              type="number"
+              step="1"
+              min="0"
+              [(ngModel)]="productoActual.stock"
+              (ngModelChange)="errorMessage = ''"
+              name="stock"
+              required
+              class="form-input"
+            >
           </div>
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="ghost-btn" (click)="cerrarModal()">Cancelar</button>
-          <button type="submit" class="primary-btn">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+          <button type="button" class="ghost-btn" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
+          <button type="submit" class="primary-btn" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Guardar') }}
+          </button>
         </div>
       </form>
     </div>
