@@ -36,6 +36,15 @@
       </div>
     </section>
 
+    <div
+      *ngIf="errorMessage && !mostrarModalProveedor && !mostrarModalRegla"
+      role="alert"
+      aria-live="assertive"
+      style="margin-bottom: 1.25rem; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.88rem; font-weight: 600;"
+    >
+      {{ errorMessage }}
+    </div>
+
     <div class="catalog-layout-cart">
 
       <aside class="summary-card-right">
@@ -86,10 +95,9 @@
         </div>
       </aside>
     </div>
-    <!-- SECCIÓN MÓDULO 1: TIPO DE CAMBIO E IMPORTACIÓN MASIVA -->
+
     <div class="catalog-layout-cart" style="margin-bottom: 1.5rem;">
       
-      <!-- Tarjeta Tipo de Cambio -->
       <aside class="summary-card-right">
         <div class="card-header">
           <h2>Tipo de Cambio (USD → Local)</h2>
@@ -102,22 +110,26 @@
               <input 
                 type="number" 
                 [(ngModel)]="tasaCambio" 
+                (ngModelChange)="errorMessage = ''"
                 step="0.0001" 
                 min="0.01" 
                 class="form-input" 
                 placeholder="Ej. 7.7500">
-              <button type="button" class="primary-btn" (click)="guardarTipoCambio()">
-                Actualizar
+              <button
+                type="button"
+                class="primary-btn"
+                [disabled]="guardandoTasa"
+                (click)="guardarTipoCambio()">
+                {{ guardandoTasa ? 'Actualizando...' : 'Actualizar' }}
               </button>
             </div>
           </div>
         </div>
       </aside>
 
-      <!-- Tarjeta Importación Masiva -->
       <aside class="summary-card-right">
         <div class="card-header">
-          <h2>Importación Masiva de Precios</h2>
+          <h2>Importación Masiva de Productos</h2>
           <span>Excel / CSV</span>
         </div>
         <div class="modal-form" style="padding: 1rem 0;">
@@ -143,7 +155,6 @@
           </small>
         </div>
       </aside>
-
     </div>
   </main>
 
@@ -153,12 +164,22 @@
         <h2>{{ modoEdicionProveedor ? 'Editar Proveedor' : 'Nuevo Proveedor'}}</h2>
       </div>
 
-      <form (ngSubmit)="guardarProveedor()" class="modal-form">
+      <div
+        *ngIf="errorMessage"
+        role="alert"
+        aria-live="assertive"
+        style="margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.86rem; font-weight: 600;"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="guardarProveedor()" class="modal-form" novalidate>
         <div class="form-group">
           <label>Nombre del Proveedor</label>
           <input 
             type="text" 
             [(ngModel)]="proveedorActual.nombre_proveedores" 
+            (ngModelChange)="errorMessage = ''"
             name="nombre_proveedores" 
             required 
             class="form-input"
@@ -170,15 +191,16 @@
           <input 
             type="text" 
             [(ngModel)]="proveedorActual.contacto_proveedores" 
+            (ngModelChange)="errorMessage = ''"
             name="contacto_proveedores" 
             class="form-input"
             placeholder="Ej. contacto@empresa.com">
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="ghost-btn" (click)="cerrarModalProveedor()">Cancelar</button>
-          <button type="submit" class="primary-btn">
-            {{ modoEdicionProveedor ? 'Actualizar' : 'Guardar' }}
+          <button type="button" class="ghost-btn" (click)="cerrarModalProveedor()" [disabled]="guardandoProveedor">Cancelar</button>
+          <button type="submit" class="primary-btn" [disabled]="guardandoProveedor">
+            {{ guardandoProveedor ? 'Guardando...' : (modoEdicionProveedor ? 'Actualizar' : 'Guardar') }}
           </button>
         </div>
       </form>
@@ -191,11 +213,21 @@
         <h2>Configurar Margen</h2>
       </div>
 
-      <form (ngSubmit)="guardarRegla()" class="modal-form">
+      <div
+        *ngIf="errorMessage"
+        role="alert"
+        aria-live="assertive"
+        style="margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.86rem; font-weight: 600;"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="guardarRegla()" class="modal-form" novalidate>
         <div class="form-group">
           <label>Categoría</label>
           <select 
             [(ngModel)]="reglaActual.id_categoria" 
+            (ngModelChange)="errorMessage = ''"
             name="id_categoria" 
             required 
             class="form-input">
@@ -210,21 +242,22 @@
           <input 
             type="number" 
             [(ngModel)]="reglaActual.porcentaje_margen" 
+            (ngModelChange)="errorMessage = ''"
             name="porcentaje_margen" 
             min="0" 
-            max="100" 
+            max="500" 
             step="0.01" 
             required 
             class="form-input">
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="ghost-btn" (click)="cerrarModalRegla()">Cancelar</button>
-          <button type="submit" class="primary-btn">Actualizar Margen</button>
+          <button type="button" class="ghost-btn" (click)="cerrarModalRegla()" [disabled]="guardandoRegla">Cancelar</button>
+          <button type="submit" class="primary-btn" [disabled]="guardandoRegla">
+            {{ guardandoRegla ? 'Actualizando...' : 'Actualizar Margen' }}
+          </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-
-
