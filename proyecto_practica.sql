@@ -1,6 +1,5 @@
 create database proyecto_practicas;
 use proyecto_practicas;
-
 create table usuario(
 	id_usuario int primary key auto_increment not null,
     nombre varchar(50),
@@ -95,9 +94,7 @@ delimiter $$
 		delete from proveedores where id_proveedores=p_id_proveedres;
 	end$$
 delimiter ;
-
 -- PROCEDIMIENTOS ALMACENADOS DE CATEGORIAS --
-
 -- listar categoria
 delimiter $$
 	create procedure sp_categria_read()
@@ -114,7 +111,6 @@ delimiter $$
 		insert into categoria(nombre) values (c_nombre);
     end $$
 delimiter ;
-
 
 -- editar categoria --
 delimiter $$
@@ -510,5 +506,3 @@ CALL sp_usuarios_create('Laura Ramos', 'laura@empresa.com', 'laura987', '5550001
 
 SELECT id_productos, modelo, activo, stock, precio_lista, moneda, id_categoria, id_marca
 FROM productos;
-
-
