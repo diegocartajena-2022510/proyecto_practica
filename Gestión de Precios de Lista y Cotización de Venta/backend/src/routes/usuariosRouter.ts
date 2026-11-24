@@ -17,7 +17,7 @@ router.post('/usuarios/registrar', async (req, res) => {
   const telefono = Number(req.body?.telefono ?? 0);
 
   if (!nombre || !pasword || !correo || !telefono) {
-    return res.status(400).json({ mensaje: 'Por favor, complete todos los campos' });
+    return res.status(400).json({mensaje: 'Por favor, complete todos los campos'});
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
