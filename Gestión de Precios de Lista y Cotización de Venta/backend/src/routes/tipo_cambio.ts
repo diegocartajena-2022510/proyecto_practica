@@ -4,7 +4,6 @@ import db from '../config/db';
 const router = Router();
 
 router.get('/tipo-cambio', async (req, res) => {
-  // Cambiamos 'id' por 'id_tipo_cambio'
   const query = 'SELECT * FROM tipo_cambio ORDER BY id_tipo_cambio DESC LIMIT 1';
   try {
     const [results]: any = await db.query(query);
@@ -14,7 +13,7 @@ router.get('/tipo-cambio', async (req, res) => {
   }
 });
 
-router.post('/tipo-cambio', async (req, res) => {
+router.put('/tipo-cambio', async (req, res) => {
   const { tasa } = req.body;
   const query = 'INSERT INTO tipo_cambio (tasa) VALUES (?)';
   try {
