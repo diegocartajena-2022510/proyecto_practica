@@ -36,6 +36,15 @@
       </div>
     </section>
 
+    <div
+      *ngIf="errorMessage"
+      role="alert"
+      aria-live="assertive"
+      style="margin-bottom: 1rem; padding: 10px 14px; border-radius: 10px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-size: 0.88rem; font-weight: 600;"
+    >
+      {{ errorMessage }}
+    </div>
+
     <section class="catalog-layout-cart">
       
       <aside class="sidebar">
@@ -66,12 +75,20 @@
             <span class="slot-tag">{{ prod.categoria_nombre }}</span>
             <h3>{{ prod.modelo }}</h3>
             <p>{{ prod.descripcion }}</p>
+            <small style="display: block; margin-bottom: 6px; color: #64748b;">
+              Stock: {{ prod.stock ?? 0 }}
+            </small>
             <div class="slot-meta">
               <div>
                 <span>Precio PVP</span>
                 <strong>Q {{ (prod.precio_pvp ?? prod.pvp_final ?? prod.precio ?? 0) | number:'1.2-2' }}</strong>
               </div>
-              <button class="primary-btn small-btn" (click)="agregarAlCarrito(prod, $event)">+ Agregar</button>
+              <button
+                class="primary-btn small-btn"
+                [disabled]="(prod.stock ?? 0) <= 0"
+                (click)="agregarAlCarrito(prod, $event)">
+                {{ (prod.stock ?? 0) <= 0 ? 'Agotado' : '+ Agregar' }}
+              </button>
             </div>
           </div>
         </article>
@@ -106,7 +123,12 @@
           <div class="grand-total"><span>Total estimado</span><strong>Q{{ total | number:'1.2-2' }}</strong></div>
         </div>
 
-        <button class="primary-btn wide" (click)="enviarCotizacionPDF()">Enviar solicitud</button>
+        <button
+          class="primary-btn wide"
+          [disabled]="itemsCotizacion.length === 0 || generandoPDF"
+          (click)="enviarCotizacionPDF()">
+          {{ generandoPDF ? 'Generando PDF...' : 'Enviar solicitud' }}
+        </button>
       </aside>
 
     </section>
@@ -127,6 +149,9 @@
       <div class="modal-copy">
         <p class="modal-label">Resumen</p>
         <p>{{ productoSeleccionado.descripcion }}</p>
+        <p style="margin-top: 6px; font-size: 0.9em; color: #475569;">
+          Disponibles en stock: <strong>{{ productoSeleccionado.stock ?? 0 }}</strong>
+        </p>
 
         <div class="modal-price-row">
           <span>Precio PVP</span>
@@ -144,7 +169,14 @@
 
     <div class="modal-acciones">
       <button class="ghost-btn" type="button" (click)="cerrarModal()">Cerrar</button>
-      <button class="primary-btn" type="button" data-id="comprar-cotizar-btn" (click)="comprarPorProducto(productoSeleccionado)">Agregar a la cotización</button>
+      <button
+        class="primary-btn"
+        type="button"
+        data-id="comprar-cotizar-btn"
+        [disabled]="(productoSeleccionado.stock ?? 0) <= 0"
+        (click)="comprarPorProducto(productoSeleccionado)">
+        {{ (productoSeleccionado.stock ?? 0) <= 0 ? 'Sin stock' : 'Agregar a la cotización' }}
+      </button>
     </div>
   </div>
 </div>
