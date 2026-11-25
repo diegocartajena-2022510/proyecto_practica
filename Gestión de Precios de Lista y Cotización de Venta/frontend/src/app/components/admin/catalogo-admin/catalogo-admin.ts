@@ -41,6 +41,7 @@ export class CatalogoAdmin implements OnInit {
   mostrarModal: boolean = false;
   modoEdicion: boolean = false;
   guardando: boolean = false;
+  eliminandoId: number | string | null = null;
   errorMessage: string = '';
   productoActual: any = this.getProductoVacio();
 
@@ -221,11 +222,33 @@ export class CatalogoAdmin implements OnInit {
   }
 
   eliminarProducto(prod: any) {
-    const id = prod.id_productos || prod.id_producto || prod.id;
-    if (!id) return;
-    if (confirm(`¿Estás seguro de eliminar "${prod.modelo || ''}"?`)) {
-      this.listarProductos = this.listarProductos.filter(p => (p.id_productos || p.id) !== id);
-      this.cdr.detectChanges();
+    const id = prod?.id_productos || prod?.id_producto || prod?.id;
+    if (!id || this.eliminandoId === id) return;
+
+    this.errorMessage = '';
+    const nombreProd = String(prod?.modelo || prod?.nombre || 'este producto').trim();
+
+    if (confirm(`¿Estás seguro de eliminar "${nombreProd}"?`)) {
+      this.eliminandoId = id;
+
+      this.productoSer.deleteProductos(id).subscribe({
+        next: () => {
+          this.eliminandoId = null;
+          this.listarProductos = this.listarProductos.filter(
+            p => (p.id_productos || p.id_producto || p.id) !== id
+          );
+          this.totalActivos = this.listarProductos.filter(
+            p => p.activo == '1' || p.activo === true || String(p.activo).toLowerCase() === 'activo'
+          ).length;
+          this.cdr.detectChanges();
+        },
+        error: (err: any) => {
+          this.eliminandoId = null;
+          console.error('Error al eliminar producto:', err);
+          this.errorMessage = err.error?.error || 'No se pudo eliminar el producto.';
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -238,6 +261,5 @@ export class CatalogoAdmin implements OnInit {
   onProveedores() { this.router.navigate(['/proveedores']); }
   onSobreNosotros() { this.router.navigate(['/sobre-nosotros']); }
   onPerfil() { this.router.navigate(['/perfil']); }
-  cerrarSesion() { this.router.navigate(['/login']); }
-
+  cerrarSesion() { this.router.navigate(['/login']);}
 }
