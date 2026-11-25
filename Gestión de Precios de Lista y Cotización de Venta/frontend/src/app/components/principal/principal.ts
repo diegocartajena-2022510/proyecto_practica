@@ -12,6 +12,15 @@ import { Router } from '@angular/router';
 export class Principal {
   
   datosUsuario: any = { nombre: '', correo: '', rol: 'usuario' };
+  menuEntidadesAbierto=false;
+
+  entidadesAdmin=[{key:'categorias', label:'Categorias'},
+                  {key:'marcas', label:'Marcas'},
+                  {key:'productos', label:'productos'},
+                  {key:'proveedores', label:'Proveedores'},
+                  {key:'reglas_margen', label:'Reglas de margen'},
+                  {key:'usuario', label:'usuarios'}
+                ]
 
   constructor(
     private router: Router,
@@ -33,6 +42,14 @@ export class Principal {
     } else {
       this.router.navigate(['/catalogo']);
     }
+  }
+  toggleMenuEntidades(event?:Event){
+    event?.stopImmediatePropagation();
+    this.menuEntidadesAbierto= !this.menuEntidadesAbierto;
+  }
+  irAEntidad(entidadKey:string){
+    this.menuEntidadesAbierto=false;
+    this.router.navigate(['/admin-entidad',entidadKey])
   }
 
   regresarMenu(){
