@@ -6,7 +6,7 @@
   color: #0f172a;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -16,7 +16,7 @@ button {
 }
 
 .dashboard-shell {
-  max-width: 1200px;
+  max-width: 1260px;
   margin: 0 auto;
   padding: 28px 18px 40px;
 }
@@ -25,11 +25,11 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 14px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 22px;
-  padding: 16px 20px;
+  padding: 14px 18px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
@@ -37,13 +37,14 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .brand-mark {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background:  rgb(69, 64, 64);
+  background: rgb(69, 64, 64);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,17 +72,22 @@ button {
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .nav-item {
   border: none;
   background: transparent;
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 9px 11px;
   color: #475569;
   font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
 }
 
 .nav-item.active {
@@ -93,10 +99,51 @@ button {
   background: #f1f5f9;
 }
 
+.dropdown-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 205px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-option {
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.dropdown-option:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .ghost-btn,
@@ -106,14 +153,18 @@ button {
 .action-list button {
   border: none;
   border-radius: 12px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
   transition: 0.2s ease;
 }
+
 .ghost-btn {
   background: #eff6ff;
   color: #1d4ed8;
 }
+
 .ghost-btn:hover {
   background: #1d4ed8;
   color: #eff6ff;
@@ -123,8 +174,9 @@ button {
   background: #111827;
   color: #fff;
 }
-.logout-btn:hover{
-  background:rgb(197, 22, 22)
+
+.logout-btn:hover {
+  background: rgb(197, 22, 22);
 }
 
 .primary-btn {
@@ -363,7 +415,7 @@ button {
   text-align: left;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
   .top-header {
     flex-wrap: wrap;
   }
@@ -372,8 +424,11 @@ button {
     order: 3;
     width: 100%;
     justify-content: center;
+    flex-wrap: wrap;
   }
+}
 
+@media (max-width: 900px) {
   .welcome-card {
     grid-template-columns: 1fr;
   }
