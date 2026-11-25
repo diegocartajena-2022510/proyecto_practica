@@ -6,6 +6,7 @@ import { Principal } from './components/principal/principal';
 import { SobreNosotros } from './components/sobre-nosotros/sobre-nosotros';
 import { Proveedores } from './components/admin/proveedores/proveedores';
 import { CatalogoAdmin } from './components/admin/catalogo-admin/catalogo-admin';
+import { AdminEntidad } from './components/admin/admin-entidad/admin-entidad';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,5 +17,7 @@ export const routes: Routes = [
   { path: 'perfil', component: Perfil },
   { path: 'sobre-nosotros', component: SobreNosotros },
   {path: 'proveedores', component:Proveedores},
-  {path:'catalogo-admin',component:CatalogoAdmin}
+  {path:'catalogo-admin',component:CatalogoAdmin},
+  {path:'admin-edntidad',component:AdminEntidad}
+
 ];
