@@ -16,6 +16,23 @@
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
         Proveedores &amp; Márgenes
       </button>
+
+      <div *ngIf="datosUsuario?.rol === 'admin'" class="dropdown-wrapper">
+        <button type="button" class="nav-item admin-badge dropdown-trigger" (click)="toggleMenuEntidades($event)">
+          Entidades BD ▾
+        </button>
+
+        <div *ngIf="menuEntidadesAbierto" class="dropdown-panel" (click)="$event.stopPropagation()">
+          <button
+            *ngFor="let ent of entidadesAdmin"
+            type="button"
+            class="dropdown-option"
+            (click)="irAEntidad(ent.key)"
+          >
+            {{ ent.label }}
+          </button>
+        </div>
+      </div>
     </nav>
 
     <div class="header-actions">
