@@ -1,1 +1,150 @@
-<p>admin-entidad works!</p>
+<div class="entity-shell">
+  <header class="entity-header">
+    <div>
+      <p class="entity-eyebrow">Panel de Administración</p>
+      <h1>{{ configActual?.title || 'Gestión de Entidad' }}</h1>
+    </div>
+
+    <div class="entity-actions">
+      <button type="button" class="btn-secondary" (click)="volverPrincipal()">
+        ← Volver a Principal
+      </button>
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="!configActual"
+        (click)="abrirNuevo()"
+      >
+        + Nuevo registro
+      </button>
+    </div>
+  </header>
+
+  <div *ngIf="successMessage" class="alert-success" role="status">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage && !mostrarModal" class="alert-error" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <section class="entity-card" *ngIf="configActual">
+    <div class="toolbar">
+      <input
+        type="text"
+        class="search-input"
+        [(ngModel)]="filtroTexto"
+        (ngModelChange)="aplicarFiltro()"
+        placeholder="Buscar en {{ configActual.title }}..."
+      />
+      <span class="count-badge">
+        {{ registrosFiltrados.length }} {{ registrosFiltrados.length === 1 ? 'registro' : 'registros' }}
+      </span>
+    </div>
+
+    <div *ngIf="cargando" class="state-box">
+      Cargando registros...
+    </div>
+
+    <div *ngIf="!cargando && registrosFiltrados.length === 0" class="state-box">
+      No se encontraron registros para mostrar.
+    </div>
+
+    <div class="table-wrap" *ngIf="!cargando && registrosFiltrados.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th *ngFor="let col of columnasTabla">{{ col }}</th>
+            <th class="th-acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of registrosFiltrados">
+            <td *ngFor="let col of columnasTabla">{{ row[col] ?? '-' }}</td>
+            <td class="col-acciones">
+              <button type="button" class="btn-edit" (click)="abrirEditar(row)">
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-delete"
+                [disabled]="eliminandoId === row[configActual.pk]"
+                (click)="eliminar(row)"
+              >
+                {{ eliminandoId === row[configActual.pk] ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Modal Crear / Editar -->
+  <div class="modal-backdrop" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h2>{{ modoEdicion ? 'Editar ' + configActual?.title : 'Nuevo ' + configActual?.title }}</h2>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="cerrarModal()"
+          [disabled]="guardando"
+          aria-label="Cerrar modal"
+        >
+          ×
+        </button>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert-error" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="guardar()" class="modal-form" novalidate>
+        <div class="field-group" *ngFor="let campo of configActual?.campos">
+          <label [for]="'campo-' + campo.name">{{ campo.label }}</label>
+
+          <select
+            *ngIf="campo.type === 'select'"
+            [id]="'campo-' + campo.name"
+            class="field-input"
+            [(ngModel)]="registroActual[campo.name]"
+            (ngModelChange)="errorMessage = ''"
+            [name]="campo.name"
+          >
+            <option *ngFor="let opt of campo.options" [ngValue]="opt.value">
+              {{ opt.label }}
+            </option>
+          </select>
+
+          <input
+            *ngIf="campo.type !== 'select'"
+            [id]="'campo-' + campo.name"
+            class="field-input"
+            [type]="campo.type"
+            [step]="campo.step || 'any'"
+            [min]="campo.min ?? null"
+            [max]="campo.max ?? null"
+            [(ngModel)]="registroActual[campo.name]"
+            (ngModelChange)="errorMessage = ''"
+            [name]="campo.name"
+          />
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cerrarModal()"
+            [disabled]="guardando"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Guardar') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
