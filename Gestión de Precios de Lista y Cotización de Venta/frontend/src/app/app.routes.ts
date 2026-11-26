@@ -18,6 +18,5 @@ export const routes: Routes = [
   { path: 'sobre-nosotros', component: SobreNosotros },
   {path: 'proveedores', component:Proveedores},
   {path:'catalogo-admin',component:CatalogoAdmin},
-  {path:'admin-edntidad',component:AdminEntidad}
-
+  {path:'admin-entidad/:entidad',component:AdminEntidad}
 ];
