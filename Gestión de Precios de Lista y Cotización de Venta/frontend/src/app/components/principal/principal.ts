@@ -1,26 +1,28 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
+  standalone: true,
   imports: [CommonModule, FormsModule],
   selector: 'app-principal',
   styleUrl: './principal.css',
   templateUrl: './principal.html',
 })
-export class Principal {
-  
+export class Principal implements OnInit {
   datosUsuario: any = { nombre: '', correo: '', rol: 'usuario' };
-  menuEntidadesAbierto=false;
+  menuEntidadesAbierto = false;
 
-  entidadesAdmin=[{key:'categorias', label:'Categorias'},
-                  {key:'marcas', label:'Marcas'},
-                  {key:'productos', label:'productos'},
-                  {key:'proveedores', label:'Proveedores'},
-                  {key:'reglas_margen', label:'Reglas de margen'},
-                  {key:'usuario', label:'usuarios'}
-                ]
+  entidadesAdmin = [
+    { key: 'categoria', label: 'Categorías' },
+    { key: 'marcas', label: 'Marcas' },
+    { key: 'productos', label: 'Productos' },
+    { key: 'proveedores', label: 'Proveedores' },
+    { key: 'reglas_margen', label: 'Reglas de margen' },
+    { key: 'tipo_cambio', label: 'Tipo de cambio' },
+    { key: 'usuario', label: 'Usuarios' }
+  ];
 
   constructor(
     private router: Router,
@@ -36,52 +38,64 @@ export class Principal {
     }
   }
 
-  onCatalogo(){
+  @HostListener('document:click')
+  cerrarMenuAlClickFuera() {
+    this.menuEntidadesAbierto = false;
+  }
+
+  onCatalogo() {
+    this.menuEntidadesAbierto = false;
     if (this.datosUsuario?.rol === 'admin') {
       this.router.navigate(['/catalogo-admin']);
     } else {
       this.router.navigate(['/catalogo']);
     }
   }
-  toggleMenuEntidades(event?:Event){
-    event?.stopImmediatePropagation();
-    this.menuEntidadesAbierto= !this.menuEntidadesAbierto;
-  }
-  irAEntidad(entidadKey:string){
-    this.menuEntidadesAbierto=false;
-    this.router.navigate(['/admin-entidad',entidadKey])
+
+  toggleMenuEntidades(event?: Event) {
+    event?.stopPropagation();
+    this.menuEntidadesAbierto = !this.menuEntidadesAbierto;
   }
 
-  regresarMenu(){
+  irAEntidad(entidadKey: string) {
+    this.menuEntidadesAbierto = false;
+    this.router.navigate(['/admin-entidad', entidadKey]);
+  }
+
+  regresarMenu() {
+    this.menuEntidadesAbierto = false;
     this.router.navigate(['/principal']);
   }
 
-  cerrarSesion(){
-    localStorage.removeItem('usuario');
+  cerrarSesion() {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('usuario');
+    }
     this.router.navigate(['/login']);
   }
 
-  onCotizar(){
+  onCotizar() {
     this.router.navigate(['/cotizar']);
   }
 
-  onPerfil(){
+  onPerfil() {
     this.router.navigate(['/perfil']);
   }
 
-  OnSobreNosotros(){
+  OnSobreNosotros() {
     this.router.navigate(['/sobre-nosotros']);
   }
 
-  onGestionProveedores(){
-
-    alert('Módulo de Proveedores (Próximamente)');
-  }
-  onProveedores(){
-    this.router.navigate(['/proveedores'])
+  onGestionProveedores() {
+    this.router.navigate(['/proveedores']);
   }
 
-  onConfigurarPrecios(){
-    alert('Motor de Reglas de Márgenes activo.');
+  onProveedores() {
+    this.router.navigate(['/proveedores']);
   }
+
+  onConfigurarPrecios() {
+    this.router.navigate(['/admin-entidad', 'reglas_margen']);
+  }
+
 }
