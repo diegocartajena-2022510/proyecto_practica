@@ -9,14 +9,15 @@
     </div>
 
     <nav class="nav-menu" aria-label="Navegación principal">
-      <button class="nav-item" (click)="regresarMenu()">Inicio</button>
-      <button class="nav-item active">Catálogo</button>
-      <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
-      <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item" routerLink="/proveedores" (click)="onProveedores()">
+      <button type="button" class="nav-item" (click)="regresarMenu()">Inicio</button>
+      <button type="button" class="nav-item active">Catálogo</button>
+      <button type="button" class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
+      <button *ngIf="datosUsuario?.rol === 'admin'" type="button" class="nav-item" (click)="onProveedores()">
         Proveedores &amp; Márgenes
       </button>
+
       <div *ngIf="datosUsuario?.rol === 'admin'" class="dropdown-wrapper">
-        <button type="button" class="nav-item admin-badge dropdown-trigger" (click)="toggleMenuEntidades($event)">
+        <button type="button" class="nav-item dropdown-trigger" (click)="toggleMenuEntidades($event)">
           Entidades BD ▾
         </button>
 
@@ -34,8 +35,8 @@
     </nav>
 
     <div class="header-actions">
-      <button class="ghost-btn" (click)="onPerfil()">Perfil</button>
-      <button class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
+      <button type="button" class="ghost-btn" (click)="onPerfil()">Perfil</button>
+      <button type="button" class="logout-btn" (click)="cerrarSesion()">Cerrar sesión</button>
     </div>
   </header>
 
@@ -47,7 +48,7 @@
       </div>
 
       <div class="toolbar-actions">
-        <button class="primary-btn" (click)="abrirModalNuevo()">+ Nuevo Producto</button>
+        <button type="button" class="primary-btn" (click)="abrirModalNuevo()">+ Nuevo Producto</button>
       </div>
     </section>
 
@@ -92,8 +93,9 @@
 
           <aside class="item-actions-right" aria-label="Acciones del producto" style="flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 9px;">
             <span class="stock-badge" style="padding: 7px 10px; border-radius: 999px;">Stock: {{ prod.stock ?? 0 }}</span>
-            <button class="ghost-btn small-btn" style="border: 1px solid #dbeafe;" (click)="abrirModalEditar(prod)">Editar</button>
+            <button type="button" class="ghost-btn small-btn" style="border: 1px solid #dbeafe;" (click)="abrirModalEditar(prod)">Editar</button>
             <button
+              type="button"
               class="btn-remove"
               style="width: 34px; height: 34px; border-radius: 9px;"
               [disabled]="eliminandoId === (prod.id_productos || prod.id_producto || prod.id)"
