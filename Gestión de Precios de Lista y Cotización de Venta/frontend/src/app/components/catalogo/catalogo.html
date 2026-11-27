@@ -14,7 +14,7 @@
       <button class="nav-item" (click)="onSobreNosotros()">Sobre nosotros</button>
 
       <button *ngIf="datosUsuario?.rol === 'admin'" class="nav-item admin-badge" (click)="onProveedores()">
-         Proveedores &amp; Márgenes
+        Proveedores &amp; Márgenes
       </button>
 
       <div *ngIf="datosUsuario?.rol === 'admin'" class="dropdown-wrapper">
