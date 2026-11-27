@@ -5,6 +5,11 @@ import { Router } from '@angular/router';
 import { ProveedoresService } from '../../../service/proveedoresService';
 import { productosService } from '../../../service/productosService';
 
+export interface entidadAdminItem{
+  key:string;
+  label:string
+}
+
 function TextoVacio(value: unknown): boolean {
   return typeof value !== 'string' || value.trim().length === 0;
 }
@@ -44,6 +49,17 @@ export class CatalogoAdmin implements OnInit {
   eliminandoId: number | string | null = null;
   errorMessage: string = '';
   productoActual: any = this.getProductoVacio();
+
+  menuEntidadesAbierto=false;
+  entidadesAdmin: entidadAdminItem[] = [
+      { key: 'categorias', label: 'categorias' },
+      { key: 'marcas', label: 'marcas' },
+      { key: 'productos', label: 'productos' },
+      { key: 'proveedores', label: 'proveedores' },
+      { key: 'margenes', label: 'reglas de margen' },
+      { key: 'tipo-cambio', label: 'tipo de cambios' },
+      { key: 'usuarios', label: 'usuarios' }
+    ];
 
   constructor(
     private router: Router,
@@ -219,6 +235,14 @@ export class CatalogoAdmin implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+  toggleMenuEntidades(event:Event){
+    event.stopPropagation();
+    this.menuEntidadesAbierto=!this.menuEntidadesAbierto;
+  }
+  irAEntidad(key:string){
+    this.menuEntidadesAbierto=false;
+    this.router.navigate(['/admin',key])
   }
 
   eliminarProducto(prod: any) {
