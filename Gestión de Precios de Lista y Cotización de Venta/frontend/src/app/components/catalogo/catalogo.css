@@ -6,7 +6,7 @@
   color: #0f172a;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -27,15 +27,16 @@ button {
   padding: 28px 18px 40px;
 }
 
+/* HEADER UNIFORME */
 .top-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 22px;
-  padding: 16px 20px;
+  padding: 14px 20px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
 }
 
@@ -43,6 +44,7 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .brand-mark {
@@ -60,7 +62,7 @@ button {
 .brand-copy {
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .brand-copy strong {
@@ -68,50 +70,112 @@ button {
 }
 
 .brand-copy span {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: #64748b;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
-.nav-item {
-  border: none;
+.nav-menu .nav-item,
+.nav-menu .dropdown-trigger,
+.nav-menu .admin-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  padding: 0 13px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
   background: transparent;
-  border-radius: 10px;
-  padding: 10px 14px;
   color: #475569;
-  font-weight: 600;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.nav-item.active {
+.nav-menu .nav-item:hover,
+.nav-menu .dropdown-trigger:hover,
+.nav-menu .admin-badge:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.nav-menu .nav-item.active {
   background: #e0ecff;
   color: #1d4ed8;
 }
 
-.nav-item:hover {
-  background: #f1f5f9;
+.dropdown-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 195px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-option {
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.dropdown-option:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .ghost-btn,
 .logout-btn,
-.primary-btn {
+.primary-btn,
+.secondary-btn,
+.action-list button {
   border: none;
   border-radius: 12px;
-  padding: 10px 16px;
+  padding: 10px 14px;
   font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
   transition: 0.2s ease;
 }
 
@@ -120,11 +184,9 @@ button {
   color: #1d4ed8;
 }
 
-.ghost-btn:hover,
-.logout-btn:hover,
-.primary-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(0.98);
+.ghost-btn:hover {
+  background: #1d4ed8;
+  color: #eff6ff;
 }
 
 .logout-btn {
@@ -132,10 +194,29 @@ button {
   color: #fff;
 }
 
+.logout-btn:hover {
+  background: rgb(197, 22, 22);
+}
+
 .primary-btn {
   background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   color: #fff;
   box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.secondary-btn {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #dbe4f0;
+}
+
+.ghost-btn:hover,
+.logout-btn:hover,
+.primary-btn:hover,
+.secondary-btn:hover,
+.action-list button:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
 }
 
 .catalog-panel {
@@ -194,10 +275,10 @@ button {
   border-color: #3b82f6;
 }
 
-/* NUEVA ESTRUCTURA DE 3 COLUMNAS */
+/* ESTRUCTURA DE 3 COLUMNAS */
 .catalog-layout-cart {
   display: grid;
-  grid-template-columns: 245px 1fr 340px; /* Sidebar | Productos | Carrito de Cotización */
+  grid-template-columns: 245px 1fr 340px;
   gap: 20px;
   align-items: start;
   margin-top: 22px;
@@ -269,7 +350,7 @@ button {
   color: #0f172a;
 }
 
-/* Grilla central de productos */
+/* GRILLA CENTRAL DE PRODUCTOS */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -360,7 +441,7 @@ button {
   font-size: 0.78rem;
 }
 
-/* BARRA LATERAL DERECHA (STICKY) - TU COTIZACIÓN */
+/* BARRA LATERAL DERECHA */
 .summary-card-right {
   position: sticky;
   top: 24px;
@@ -493,7 +574,7 @@ button {
   width: 100%;
 }
 
-/* Modales */
+/* MODALES */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -591,11 +672,23 @@ button {
   border-top: 1px solid #e2e8f0;
 }
 
-/* Responsivo */
-@media (max-width: 1100px) {
+/* RESPONSIVO */
+@media (max-width: 1120px) {
+  .top-header {
+    flex-wrap: wrap;
+  }
+
+  .nav-menu {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
   .catalog-layout-cart {
     grid-template-columns: 1fr;
   }
+
   .summary-card-right {
     position: static;
   }
@@ -606,16 +699,17 @@ button {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .toolbar-actions {
     width: 100%;
   }
+
   .search-box {
     width: 100%;
   }
 }
 
-
-
+/* PDF */
 .pdf-container-styled {
   position: absolute;
   left: -9999px;
@@ -782,15 +876,15 @@ button {
   font-weight: 700;
   text-transform: uppercase;
 }
-.logout-btn:hover{
-  background:rgb(197, 22, 22)
-}
+
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
 .pdf-bottom-summary {
   display: flex;
   justify-content: flex-end;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .pdf-totals-card {
@@ -828,11 +922,6 @@ button {
 }
 
 #plantilla-pdf tr {
-  page-break-inside: avoid;
-  break-inside: avoid;
-}
-
-.pdf-bottom-summary {
   page-break-inside: avoid;
   break-inside: avoid;
 }
